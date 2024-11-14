@@ -4,13 +4,63 @@ import Link from "next/link";
 import { FC, useRef } from "react";
 import TextInput from "./TextInput";
 import { Logo } from "../icons/Logo";
+import { useFormik } from "formik";
+import Button from "./Button";
+import getLoginFormSchema from "../validation/loginFormschema";
+import { useAuth } from "../context/AuthContext";
+import { redirect } from "next/navigation";
 
 const LoginForm: FC = ({}) => {
   const submitRef = useRef<HTMLButtonElement>(null);
+  const { login, authToken } = useAuth();
+  const formik = useFormik({
+    initialValues: {
+      username: "",
+      password: "",
+    },
+    validationSchema: getLoginFormSchema(),
+    validateOnBlur: false,
+    validateOnChange: true,
+    onSubmit: async (values) => {
+      try {
+        console.log(values);
+        const res = await fetch(`http://localhost:5140/api/account/login`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept-Language": "de",
+          },
+          body: JSON.stringify({
+            username: values.username,
+            password: values.password,
+          }),
+        });
+
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+
+        const data = await res.json();
+        const { token, user } = data;
+
+        login(token);
+        if (authToken) {
+          redirect("/dashboard");
+        }
+        console.log("Login successful", data);
+      } catch (error) {
+        console.error("Submitting information form failed", error);
+      }
+    },
+  });
 
   return (
     <div className="h-full w-full flex flex-col items-center p-8 md:p-10">
-      <form className="w-full md:max-w-[500px] max-w-full flex flex-col md:justify-center flex-1">
+      <form
+        id="loginForm"
+        onSubmit={formik.handleSubmit}
+        className="w-full md:max-w-[500px] max-w-full flex flex-col md:justify-center flex-1"
+      >
         <div className="text-center w-full flex items-center">
           <Logo className="size-16" />{" "}
           <div className="text-52 mt-auto font-bold text-blue !leading-none">
@@ -25,9 +75,12 @@ const LoginForm: FC = ({}) => {
         </div>
         <div className="w-full mt-8 md:mt-10">
           <TextInput
-            placeholder="Email"
-            type="email"
-            name="email"
+            placeholder="Username"
+            type="text"
+            name="username"
+            onChange={formik.handleChange}
+            error={formik.errors.username}
+            touched={formik.touched.username}
             defaultValue=""
           />
         </div>
@@ -36,6 +89,9 @@ const LoginForm: FC = ({}) => {
             placeholder="Passwort"
             type="password"
             name="password"
+            onChange={formik.handleChange}
+            error={formik.errors.password}
+            touched={formik.touched.password}
             defaultValue=""
           />
         </div>
@@ -46,6 +102,12 @@ const LoginForm: FC = ({}) => {
         </div>
         <div className="mt-10 md:px-8">
           <button ref={submitRef} className="w-full" type="submit" />
+          <Button
+            className="w-full"
+            type="submit"
+            form="loginForm"
+            label="Anmelden"
+          />
         </div>
       </form>
       <div>

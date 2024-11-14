@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { FC, ReactNode } from "react";
+import AuthWrapper from "../components/AuthWrapper";
 
 const geistSans = localFont({
   src: "../public/fonts/GeistVF.woff",
@@ -41,12 +42,14 @@ type Props = {
 };
 const RootLayout: FC<Props> = ({ children }) => {
   return (
-    <html
-      lang="de"
-      className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-    >
-      <body>{children}</body>
-    </html>
+    <AuthWrapper>
+      <html
+        lang="de"
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        <body>{children}</body>
+      </html>
+    </AuthWrapper>
   );
 };
 

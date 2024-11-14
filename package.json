@@ -9,10 +9,14 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@types/js-cookie": "^3.0.6",
     "classnames": "^2.5.1",
+    "formik": "^2.4.6",
+    "js-cookie": "^3.0.5",
     "next": "14.2.12",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@types/node": "^20",
