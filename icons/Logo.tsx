@@ -15,19 +15,19 @@ export const Logo = (props: { className?: string }) => {
         <clipPath id="3eeee6e967">
           <path
             d="M 231 0 L 313.40625 0 L 313.40625 83 L 231 83 Z M 231 0 "
-            clip-rule="nonzero"
+            clipRule="nonzero"
           />
         </clipPath>
         <clipPath id="a4f5fae6c1">
           <path
             d="M 61.40625 0 L 144 0 L 144 231 L 61.40625 231 Z M 61.40625 0 "
-            clip-rule="nonzero"
+            clipRule="nonzero"
           />
         </clipPath>
         <clipPath id="75d0888768">
           <path
             d="M 117 0 L 144 0 L 144 231 L 117 231 Z M 117 0 "
-            clip-rule="nonzero"
+            clipRule="nonzero"
           />
         </clipPath>
         <clipPath id="a8fa63a689">
