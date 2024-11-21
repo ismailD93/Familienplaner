@@ -8,11 +8,12 @@ import { useFormik } from "formik";
 import Button from "./Button";
 import getLoginFormSchema from "../validation/loginFormschema";
 import { useAuth } from "../context/AuthContext";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 const LoginForm: FC = ({}) => {
   const submitRef = useRef<HTMLButtonElement>(null);
-  const { login, authToken } = useAuth();
+  const router = useRouter();
+  const { login, logout } = useAuth();
   const formik = useFormik({
     initialValues: {
       username: "",
@@ -23,7 +24,6 @@ const LoginForm: FC = ({}) => {
     validateOnChange: true,
     onSubmit: async (values) => {
       try {
-        console.log(values);
         const res = await fetch(`http://localhost:5140/api/account/login`, {
           method: "POST",
           headers: {
@@ -41,13 +41,10 @@ const LoginForm: FC = ({}) => {
         }
 
         const data = await res.json();
-        const { token, user } = data;
-
-        login(token);
-        if (authToken) {
-          redirect("/dashboard");
+        login(data);
+        if (data.token) {
+          router.push("/");
         }
-        console.log("Login successful", data);
       } catch (error) {
         console.error("Submitting information form failed", error);
       }
@@ -107,6 +104,14 @@ const LoginForm: FC = ({}) => {
             type="submit"
             form="loginForm"
             label="Anmelden"
+          />
+        </div>
+        <div className="mt-10 md:px-8">
+          <Button
+            className="w-full"
+            onClick={() => logout()}
+            type="button"
+            label="Logout"
           />
         </div>
       </form>

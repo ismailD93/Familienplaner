@@ -1,15 +1,19 @@
-import { FC } from "react";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
-type Props = {
-  params: {
-    locale: string;
-  };
-};
+const DashboardPage = async () => {
+  // Access cookies server-side
+  const cookieStore = cookies();
+  const authToken = cookieStore.get("authToken")?.value;
 
-const DashboardPage: FC<Props> = async () => {
+  if (!authToken) {
+    redirect("/login");
+  }
+
   return (
     <div>
-      <div>dashboard </div>
+      <h1>Dashboard</h1>
+      <p>Welcome! Your token: {authToken}</p>
     </div>
   );
 };
