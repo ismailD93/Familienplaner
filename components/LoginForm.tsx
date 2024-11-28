@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { FC, useRef } from "react";
+import { FC } from "react";
 import TextInput from "./TextInput";
 import { Logo } from "../icons/Logo";
 import { useFormik } from "formik";
@@ -11,7 +11,6 @@ import { useAuth } from "../context/AuthContext";
 import { useRouter } from "next/navigation";
 
 const LoginForm: FC = ({}) => {
-  const submitRef = useRef<HTMLButtonElement>(null);
   const router = useRouter();
   const { login, logout } = useAuth();
   const formik = useFormik({
@@ -98,7 +97,6 @@ const LoginForm: FC = ({}) => {
           </Link>
         </div>
         <div className="mt-10 md:px-8">
-          <button ref={submitRef} className="w-full" type="submit" />
           <Button
             className="w-full"
             type="submit"
