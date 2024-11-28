@@ -16,11 +16,11 @@ type NavigationProps = {
 const Sidebar: FC<NavigationProps> = ({}) => {
   const router = useRouter();
   const { logout } = useAuth();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen] = useState(true);
 
   return (
     <>
-      <div className="fixed inset-x-0 top-0 z-[1] border-b border-grey-90 bg-blue-100 px-8 py-6">
+      {/* <div className="fixed bg-[#E4EDF3] inset-x-0 top-0 z-[1] border-b border-grey-90 bg-blue-100 px-8 py-6">
         <div
           className={classNames(
             "flex justify-between transition-all duration-300",
@@ -38,7 +38,7 @@ const Sidebar: FC<NavigationProps> = ({}) => {
           </div>
           <div className="flex items-center gap-x-8"></div>
         </div>
-      </div>
+      </div>*/}
       <div
         className={classNames("w-full transition-all duration-300", {
           "max-w-[208px]": isSidebarOpen,
@@ -49,7 +49,7 @@ const Sidebar: FC<NavigationProps> = ({}) => {
           <motion.div
             initial={{ width: isSidebarOpen ? 208 : 56 }}
             animate={{ width: isSidebarOpen ? 208 : 56 }}
-            className="fixed inset-y-0 top-0 z-[2] w-full max-w-[208px] select-none border-r border-grey-90 bg-blue-100"
+            className="fixed bg-[#E4EDF3] inset-y-0 top-0 z-[2] w-full max-w-[64px] select-none border-r"
           >
             <div className="flex h-full flex-col">
               <div className="flex flex-row items-center gap-x-2 px-4 pt-5">

@@ -2,7 +2,6 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 const DashboardPage = async () => {
-  // Access cookies server-side
   const cookieStore = cookies();
   const authToken = cookieStore.get("authToken")?.value;
 
