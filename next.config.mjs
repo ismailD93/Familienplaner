@@ -5,6 +5,7 @@ const nextConfig = {
     remotePatterns: [],
   },
   output: "standalone",
+  reactStrictMode: false,
   devIndicators: {
     appIsrStatus: false,
     buildActivity: false,

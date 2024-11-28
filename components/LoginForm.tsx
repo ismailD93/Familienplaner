@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { FC } from "react";
+import { FC, useState } from "react";
 import TextInput from "./TextInput";
 import { Logo } from "../icons/Logo";
 import { useFormik } from "formik";
@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 const LoginForm: FC = ({}) => {
   const router = useRouter();
   const { login, logout } = useAuth();
+  const [falseValues, setFalseValues] = useState<string | undefined>(undefined);
   const formik = useFormik({
     initialValues: {
       username: "",
@@ -34,8 +35,8 @@ const LoginForm: FC = ({}) => {
             password: values.password,
           }),
         });
-
         if (!res.ok) {
+          setFalseValues("Anmelde Daten falsch!");
           throw new Error(`HTTP error! status: ${res.status}`);
         }
 
@@ -43,7 +44,9 @@ const LoginForm: FC = ({}) => {
         const loggedIn = login(data.token);
 
         if (loggedIn) {
-          router.push("/overview");
+          setTimeout(() => {
+            router.push("/overview");
+          }, 100);
         }
       } catch (error) {
         console.error("Submitting information form failed", error);
@@ -76,7 +79,7 @@ const LoginForm: FC = ({}) => {
             type="text"
             name="username"
             onChange={formik.handleChange}
-            error={formik.errors.username}
+            error={formik.errors.username || falseValues}
             touched={formik.touched.username}
             defaultValue=""
           />
@@ -87,7 +90,7 @@ const LoginForm: FC = ({}) => {
             type="password"
             name="password"
             onChange={formik.handleChange}
-            error={formik.errors.password}
+            error={formik.errors.password || falseValues}
             touched={formik.touched.password}
             defaultValue=""
           />
