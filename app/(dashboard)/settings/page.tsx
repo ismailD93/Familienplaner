@@ -11,8 +11,7 @@ const DashboardPage = async () => {
 
   return (
     <div>
-      <h1>Dashboard</h1>
-      <p>Welcome! Your token: {authToken}</p>
+      <h1>Settings</h1>
     </div>
   );
 };

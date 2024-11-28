@@ -40,9 +40,10 @@ const LoginForm: FC = ({}) => {
         }
 
         const data = await res.json();
-        login(data);
-        if (data.token) {
-          router.push("/");
+        const loggedIn = login(data.token);
+
+        if (loggedIn) {
+          router.push("/overview");
         }
       } catch (error) {
         console.error("Submitting information form failed", error);

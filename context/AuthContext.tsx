@@ -10,7 +10,7 @@ import Cookies from "js-cookie";
 // Define types for the context value
 interface AuthContextType {
   authToken: string | null;
-  login: (token: string) => void;
+  login: (token: string) => boolean;
   logout: () => void;
 }
 
@@ -31,13 +31,23 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   }, []);
 
-  const login = (token: string) => {
+  const login = (token: string): boolean => {
     Cookies.set("authToken", token, {
       expires: 1,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "Strict", // Same-site policy
+      sameSite: "Strict",
     });
-    setAuthToken(token);
+
+    // Check if the cookie was successfully set
+    const cookieValue = Cookies.get("authToken");
+
+    if (cookieValue === token) {
+      setAuthToken(token); // Assuming this updates your application state
+      return true; // Cookie successfully set
+    } else {
+      console.error("Failed to set authToken cookie.");
+      return false; // Cookie setting failed
+    }
   };
 
   const logout = () => {
