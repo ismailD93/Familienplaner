@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import Calender from "../../../components/Calneder";
 
 const DashboardPage = async () => {
   const cookieStore = cookies();
@@ -9,11 +10,7 @@ const DashboardPage = async () => {
     redirect("/login");
   }
 
-  return (
-    <div>
-      <h1>Calender</h1>
-    </div>
-  );
+  return <Calender />;
 };
 
 export default DashboardPage;
