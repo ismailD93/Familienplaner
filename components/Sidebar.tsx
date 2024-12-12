@@ -43,7 +43,7 @@ const Sidebar: FC<NavigationProps> = ({}) => {
     <div className="w-full max-w-[50px] md:max-w-[64px] mr-4">
       <div className="fixed bg-[#E4EDF3] inset-y-0 top-0 z-[2] w-full max-w-[50px] md:max-w-[64px] select-none shadow-xl">
         <div className="flex flex-col justify-between h-full px-2 py-20 items-center">
-          <div className="flex flex-col gap-y-8 text-10">
+          <div className="flex flex-col  text-10">
             {linkItems.map((item, index) => {
               return (
                 <div
@@ -52,7 +52,7 @@ const Sidebar: FC<NavigationProps> = ({}) => {
                   className={classNames(
                     "flex flex-col items-center p-2 gap-y-1.5 rounded-md",
                     {
-                      "text-blue shadow-inner": pathname === item.link,
+                      "text-blue": pathname === item.link,
                       "hover:bg-blue hover:bg-opacity-15 cursor-pointer":
                         pathname !== item.link,
                     }
@@ -80,7 +80,7 @@ const Sidebar: FC<NavigationProps> = ({}) => {
               className={classNames(
                 "flex flex-col items-center p-2 rounded-md gap-y-1.5 cursor-pointer",
                 {
-                  "text-blue shadow-inner": pathname === "/settings",
+                  "text-blue": pathname === "/settings",
                   "hover:text-blue cursor-pointer": pathname !== "/settings",
                 }
               )}
