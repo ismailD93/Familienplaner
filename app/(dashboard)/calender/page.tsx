@@ -1,13 +1,7 @@
+import Calender from "../../../components/Calneder";
 
 const DashboardPage = async () => {
-
-
-
-  return (
-    <div>
-      <h1>Calender</h1>
-    </div>
-  );
+  return <Calender />;
 };
 
 export default DashboardPage;
