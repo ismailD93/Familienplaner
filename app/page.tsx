@@ -1,8 +1,12 @@
+import Button from "../components/Button";
+import Test from "../components/Test";
+
 const LandingPage = async () => {
+  
   return (
-    <div>
-      <h1>Landingpage</h1>
-      <p></p>
+    <div  className="m-20">
+      <Test />
+
     </div>
   );
 };
