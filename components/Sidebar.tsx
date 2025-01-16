@@ -3,7 +3,7 @@
 import { FC } from "react";
 import { useAuth } from "../context/AuthContext";
 import { usePathname, useRouter } from "next/navigation";
-import { TbLogout2 } from "react-icons/tb";
+import { TbLogout } from "react-icons/tb";
 import { LuClipboardList } from "react-icons/lu";
 import { SlCalender } from "react-icons/sl";
 import { MdOutlineFamilyRestroom } from "react-icons/md";
@@ -42,7 +42,7 @@ const Sidebar: FC<NavigationProps> = ({}) => {
   return (
     <div className="w-full max-w-[50px] md:max-w-[64px] ">
       <div className="fixed bg-[#E4EDF3] inset-y-0 top-0 z-[2] w-full max-w-[50px] md:max-w-[64px] select-none shadow-xl">
-        <div className="flex flex-col justify-between h-full px-2 py-20 items-center">
+        <div className="flex flex-col justify-between h-full px-2 py-36 items-center">
           <div className="flex flex-col  text-10">
             {linkItems.map((item, index) => {
               return (
@@ -53,6 +53,7 @@ const Sidebar: FC<NavigationProps> = ({}) => {
                     "flex flex-col items-center p-2 gap-y-1.5 rounded-md",
                     {
                       "text-blue": pathname === item.link,
+                      "text-gray/80": pathname !== item.link,
                       "hover:bg-blue hover:bg-opacity-15 cursor-pointer":
                         pathname !== item.link,
                     }
@@ -72,8 +73,8 @@ const Sidebar: FC<NavigationProps> = ({}) => {
               }}
               className="cursor-pointer text-10 font-medium flex flex-col items-center gap-y-1.5 hover:text-blue"
             >
-              <TbLogout2 className="size-5 md:size-6" />
-              <span className="hidden md:block">Ausloggen</span>
+              <TbLogout className="size-5 md:size-6 text-gray/80" />
+              <span className="hidden text-gray md:block">Ausloggen</span>
             </div>
             <div
               onClick={() => router.push("/settings")}
@@ -81,12 +82,18 @@ const Sidebar: FC<NavigationProps> = ({}) => {
                 "flex flex-col items-center p-2 rounded-md gap-y-1.5 cursor-pointer",
                 {
                   "text-blue": pathname === "/settings",
+                  "text-gray/80": pathname !== "/settings",
                   "hover:text-blue cursor-pointer": pathname !== "/settings",
                 }
               )}
             >
-              <GoGear className="size-5 md:size-6" />
-              <span className="hidden md:block">Einstellung</span>
+              <GoGear
+                className={classNames("size-5 md:size-6", {
+                  "text-blue": pathname === "/settings",
+                  "text-gray/80": pathname !== "/settings",
+                })}
+              />
+              <span className="hidden md:block ">Einstellung</span>
             </div>
           </div>
         </div>
