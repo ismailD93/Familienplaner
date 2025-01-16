@@ -5,6 +5,7 @@ import { addDays, format, startOfWeek } from "date-fns";
 import { de } from "date-fns/locale";
 import { FC, useState } from "react";
 import { ChevronIcon } from "../icons/ChevronIcon";
+import DetailPopUp from "./DetailPopUp";
 
 interface CalenderProps {
   name?: string;
@@ -16,6 +17,7 @@ const Calender: FC<CalenderProps> = ({}) => {
   const weekdays: { weekday: string; date: Date }[] = [];
   const [currentPage, setCurrentPage] = useState(0);
   const [expand, setExpand] = useState<7 | 14>(7);
+  const [open, setOpen] = useState<boolean>(false);
 
   const today = new Date();
   const weekStart = startOfWeek(today, { weekStartsOn: 1 });
@@ -93,7 +95,9 @@ const Calender: FC<CalenderProps> = ({}) => {
               {paginatedUsers.map((item, index) => {
                 return (
                   <div
-                    onClick={() => console.log(item, day)}
+                    onDoubleClick={() => {
+                      setOpen(!open);
+                    }}
                     key={index}
                     className={classNames(
                       "border-b border-l border-gray/10 w-full cursor-pointer max-w-[200px]",
@@ -143,6 +147,7 @@ const Calender: FC<CalenderProps> = ({}) => {
           <ChevronIcon className="size-6" />
         </button>
       </div>
+      <DetailPopUp open={open} setClose={() => setOpen(false)} />
     </div>
   );
 };
