@@ -13,8 +13,7 @@ const DashboardLayout: FC<Props> = async ({ children }) => {
     <div className="relative flex min-h-screen w-full flex-col">
       <div className="flex h-full w-full">
         <Sidebar />
-
-        <div className="mt-14 min-h-[calc(100vh-69px)] w-full overflow-x-auto">
+        <div className="mt-5 min-h-[calc(100vh-69px)] w-full mx-2">
           {children}
         </div>
       </div>

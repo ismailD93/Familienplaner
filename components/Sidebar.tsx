@@ -40,7 +40,7 @@ const Sidebar: FC<NavigationProps> = ({}) => {
   ];
 
   return (
-    <div className="w-full max-w-[50px] md:max-w-[64px] mr-4">
+    <div className="w-full max-w-[50px] md:max-w-[64px] ">
       <div className="fixed bg-[#E4EDF3] inset-y-0 top-0 z-[2] w-full max-w-[50px] md:max-w-[64px] select-none shadow-xl">
         <div className="flex flex-col justify-between h-full px-2 py-20 items-center">
           <div className="flex flex-col  text-10">
