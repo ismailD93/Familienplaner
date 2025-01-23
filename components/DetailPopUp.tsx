@@ -1,5 +1,6 @@
 "use client";
 
+import classNames from "classnames";
 import React, { FC, useState } from "react";
 
 interface DetailPopUpProps {
@@ -35,7 +36,7 @@ const DetailPopUp: FC<DetailPopUpProps> = ({ open, setClose }) => {
   };
 
   return (
-    <div className="p-6">
+    <div className={classNames({ "p-6": open })}>
       {/* Dialog */}
       {open && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
