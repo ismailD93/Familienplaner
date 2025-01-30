@@ -7,6 +7,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      screens: {
+        cmd: "1000px",
+      },
       spacing: {
         "fixed-50": "50px",
         "fixed-70": "70px",
@@ -49,7 +52,7 @@ module.exports = {
     colors: {
       transparent: "transparent",
       black: "#030911",
-      gray: "F5F5F5",
+      gray: "#37373780",
       "black-60": "#9A9DA0",
       "black-50": "#CDCECF",
       "black-40": "#F2F3F3",
