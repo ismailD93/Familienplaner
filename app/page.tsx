@@ -1,4 +1,3 @@
-import Button from "../components/Button";
 import Test from "../components/Test";
 
 const LandingPage = async () => {

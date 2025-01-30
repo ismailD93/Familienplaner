@@ -1,19 +1,13 @@
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 
-const DashboardPage = async () => {
-  const cookieStore = cookies();
-  const authToken = cookieStore.get("authToken")?.value;
+import Overview from "../../../components/Overview";
 
-  if (!authToken) {
-    redirect("/login");
-  }
-
+const OverviewPage = async () => {
+const name = 'fetch'
   return (
     <div>
-      <h1>Overview</h1>
+      <Overview />
     </div>
   );
 };
 
-export default DashboardPage;
+export default OverviewPage;

@@ -19,16 +19,13 @@ const Test: React.FC = () => {
   const [title, setTitle] = useState("");
   const [note, setNote] = useState("");
   const [reminder, setReminder] = useState("none"); // Initialwert für Erinnerung
-  const [users, setUsers] = useState([
-    { id: 1, name: "User 1", avatarUrl: "https://via.placeholder.com/40" },
-    { id: 2, name: "User 2", avatarUrl: "https://via.placeholder.com/40" },
-  ]);
+
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
   const handleSave = () => {
-    console.log({ title, note, reminder, users });
+    console.log({ title, note, reminder });
     handleClose();
   };
 
@@ -132,14 +129,6 @@ const Test: React.FC = () => {
               <div>
                 <label className="block text-sm font-medium mb-1 text-black-60">Benutzer</label>
                 <div className="flex items-center space-x-2">
-                  {users.map((user) => (
-                    <img
-                      key={user.id}
-                      src={user.avatarUrl}
-                      alt={user.name}
-                      className="w-10 h-10 rounded-full border border-black-50"
-                    />
-                  ))}
                   <button
                     type="button"
                     onClick={() => alert("Benutzer hinzufügen")}
