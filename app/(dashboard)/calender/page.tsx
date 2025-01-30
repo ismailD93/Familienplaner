@@ -22,10 +22,10 @@ const DashboardPage = async () => {
     { id: "2", name: "Metehan", status: "online" },
     { id: "3", name: "Uemit", status: "online" },
     { id: "4", name: "Kind1", status: "online" },
-    { id: "5", name: "Kind2", status: "online" },
-    { id: "6", name: "Kind3", status: "online" },
+    { id: "5", name: "Kind2", status: "offline" },
+    { id: "6", name: "Kind3", status: "offline" },
     { id: "7", name: "Oma", status: "online" },
-    { id: "8", name: "Opa", status: "online" },
+    { id: "8", name: "Opa", status: "offline" },
   ];
 
   return <Calender user={user} family={familiy} />;

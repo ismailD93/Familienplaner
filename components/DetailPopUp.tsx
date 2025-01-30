@@ -29,7 +29,6 @@ const DetailPopUp: FC<DetailPopUpProps> = ({ open, setClose }) => {
 
   const handleSave = () => {
     console.log({ title, note, reminder });
-    handleClose();
   };
 
   return (
