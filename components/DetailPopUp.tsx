@@ -1,44 +1,38 @@
-'use client';
+"use client";
 
-import React, { useState } from "react";
+import classNames from "classnames";
+import React, { FC, useState } from "react";
+
+interface DetailPopUpProps {
+  open: boolean;
+  setClose: () => void;
+}
 
 // Funktion zum Generieren der 15-Minuten-Schritte
 const generateTimeOptions = (): string[] => {
   const times: string[] = [];
   for (let hour = 0; hour < 24; hour++) {
     for (let minute = 0; minute < 60; minute += 15) {
-      const formattedTime = `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
+      const formattedTime = `${String(hour).padStart(2, "0")}:${String(
+        minute
+      ).padStart(2, "0")}`;
       times.push(formattedTime);
     }
   }
   return times;
 };
 
-const Test: React.FC = () => {
-  const [open, setOpen] = useState(false);
+const DetailPopUp: FC<DetailPopUpProps> = ({ open, setClose }) => {
   const [title, setTitle] = useState("");
   const [note, setNote] = useState("");
   const [reminder, setReminder] = useState("none"); // Initialwert für Erinnerung
 
-
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
   const handleSave = () => {
     console.log({ title, note, reminder });
-    handleClose();
   };
 
   return (
-    <div className="p-6">
-      {/* Button zum Öffnen des Dialogs */}
-      <button
-        onClick={handleOpen}
-        className="px-4 py-2 bg-blue text-white rounded-lg hover:bg-blue-light"
-      >
-        Dialog öffnen
-      </button>
-
+    <div className={classNames({ "p-6": open })}>
       {/* Dialog */}
       {open && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -46,7 +40,9 @@ const Test: React.FC = () => {
             <h2 className="text-xl font-bold mb-4 text-black">Detail</h2>
             <form className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-1 text-black-60">Ereignistitel</label>
+                <label className="block text-sm font-medium mb-1 text-black-60">
+                  Ereignistitel
+                </label>
                 <input
                   type="text"
                   value={title}
@@ -58,10 +54,10 @@ const Test: React.FC = () => {
 
               <div className="flex space-x-4 items-end">
                 <div className="flex-1">
-                  <label className="block text-sm font-medium mb-1 text-black-60">Zeit von</label>
-                  <select
-                    className="w-full px-3 py-2 border border-black-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue"
-                  >
+                  <label className="block text-sm font-medium mb-1 text-black-60">
+                    Zeit von
+                  </label>
+                  <select className="w-full px-3 py-2 border border-black-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue">
                     {generateTimeOptions().map((time) => (
                       <option key={time} value={time}>
                         {time}
@@ -70,10 +66,10 @@ const Test: React.FC = () => {
                   </select>
                 </div>
                 <div className="flex-1">
-                  <label className="block text-sm font-medium mb-1 text-black-60">Zeit bis</label>
-                  <select
-                    className="w-full px-3 py-2 border border-black-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue"
-                  >
+                  <label className="block text-sm font-medium mb-1 text-black-60">
+                    Zeit bis
+                  </label>
+                  <select className="w-full px-3 py-2 border border-black-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue">
                     {generateTimeOptions().map((time) => (
                       <option key={time} value={time}>
                         {time}
@@ -82,7 +78,9 @@ const Test: React.FC = () => {
                   </select>
                 </div>
                 <div className="flex-1">
-                  <label className="block text-sm font-medium mb-1 text-black-60">Erinnerung</label>
+                  <label className="block text-sm font-medium mb-1 text-black-60">
+                    Erinnerung
+                  </label>
                   <select
                     value={reminder}
                     onChange={(e) => setReminder(e.target.value)}
@@ -100,14 +98,18 @@ const Test: React.FC = () => {
 
               <div className="flex space-x-4">
                 <div className="flex-1">
-                  <label className="block text-sm font-medium mb-1 text-black-60">Datum von</label>
+                  <label className="block text-sm font-medium mb-1 text-black-60">
+                    Datum von
+                  </label>
                   <input
                     type="date"
                     className="w-full px-3 py-2 border border-black-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue"
                   />
                 </div>
                 <div className="flex-1">
-                  <label className="block text-sm font-medium mb-1 text-black-60">Datum bis</label>
+                  <label className="block text-sm font-medium mb-1 text-black-60">
+                    Datum bis
+                  </label>
                   <input
                     type="date"
                     className="w-full px-3 py-2 border border-black-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue"
@@ -116,7 +118,9 @@ const Test: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1 text-black-60">Notiz</label>
+                <label className="block text-sm font-medium mb-1 text-black-60">
+                  Notiz
+                </label>
                 <textarea
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
@@ -127,7 +131,9 @@ const Test: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1 text-black-60">Benutzer</label>
+                <label className="block text-sm font-medium mb-1 text-black-60">
+                  Benutzer
+                </label>
                 <div className="flex items-center space-x-2">
                   <button
                     type="button"
@@ -142,7 +148,9 @@ const Test: React.FC = () => {
 
             <div className="mt-6 flex justify-end space-x-2">
               <button
-                onClick={handleClose}
+                onClick={() => {
+                  setClose();
+                }}
                 className="px-4 py-2 border border-black-50 rounded-lg hover:bg-black-40 text-black"
               >
                 Abbrechen
@@ -161,4 +169,4 @@ const Test: React.FC = () => {
   );
 };
 
-export default Test;
+export default DetailPopUp;

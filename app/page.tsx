@@ -1,13 +1,9 @@
-import Test from "../components/Test";
-
-const LandingPage = async () => {
-  
+const DashboardPage = async () => {
   return (
-    <div  className="m-20">
-      <Test />
-
+    <div>
+      <div>Landingpage</div>
     </div>
   );
 };
 
-export default LandingPage;
+export default DashboardPage;

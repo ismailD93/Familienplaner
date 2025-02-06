@@ -35,6 +35,7 @@ const LoginForm: FC = ({}) => {
             password: values.password,
           }),
         });
+
         if (!res.ok) {
           setFalseValues("Anmelde Daten falsch!");
           throw new Error(`HTTP error! status: ${res.status}`);
@@ -71,8 +72,7 @@ const LoginForm: FC = ({}) => {
           <span className="md:text-20 lg:text-24 font-bold">
             Ein Plan für die ganze Familie
           </span>
-          <span>Willkommen zurück, bitte melde dich in dein Konto ein
-          </span>
+          <span>Willkommen zurück, bitte melde dich in dein Konto ein</span>
         </div>
         <div className="w-full mt-8 md:mt-10">
           <TextInput
@@ -108,7 +108,6 @@ const LoginForm: FC = ({}) => {
             form="loginForm"
             label="Anmelden"
           />
-   
         </div>
         <div className="mt-10 md:px-8">
           <Button
