@@ -25,7 +25,7 @@ const LoginForm: FC = ({}) => {
     onSubmit: async (values) => {
       try {
         const res = await fetch(`http://localhost:5140/api/account/login`, {
-          method: "POST",
+          method: "PUT",
           headers: {
             "Content-Type": "application/json",
             "Accept-Language": "de",
