@@ -1,15 +1,15 @@
-// import { cookies } from "next/headers";
-// import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import Calender from "../../../components/Calneder";
 import { User } from "../../../types";
 
 const DashboardPage = async () => {
-  // const cookieStore = cookies();
-  // const authToken = cookieStore.get("authToken")?.value;
+  const cookieStore = cookies();
+  const authToken = cookieStore.get("authToken")?.value;
 
-  // if (!authToken) {
-  //   redirect("/login");
-  // }
+  if (!authToken) {
+    redirect("/login");
+  }
   const user = {
     id: "1",
     name: "Ismail",
