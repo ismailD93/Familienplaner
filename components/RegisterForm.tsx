@@ -8,6 +8,7 @@ import { useFormik } from "formik";
 import Button from "./Button";
 import { useRouter } from "next/navigation";
 import getRegisterFormSchema from "../validation/registerFormschema";
+import { data } from "framer-motion/client";
 
 const RegisterForm: FC = ({}) => {
 const router = useRouter();
@@ -16,7 +17,8 @@ const formik = useFormik({
     initialValues: {
         username: "",
         email: "",
-        password: "",//auch hinzufügen
+        password: "",
+        confirmPassword: "",
     },
     validationSchema: getRegisterFormSchema(),
     validateOnBlur: false,
@@ -30,9 +32,10 @@ const formik = useFormik({
             "Accept-Language": "de",
         },
             body: JSON.stringify({
-            username: values.username,//mitgabe parameter ändern
+            username: values.username,
             email: values.email,
             password: values.password,
+            confirmPassword: values.confirmPassword,
         }),
         });
 
@@ -41,11 +44,10 @@ const formik = useFormik({
             throw new Error(`HTTP error! status: ${res.status}`);
         }
 
+
+
         // Überprüfe den HTTP-Statuscode
         const statusCode = res.status;  // z.B. 200, 400, 500, etc.
-
-        // Logge den Statuscode und handle entsprechend
-        console.log('HTTP Status Code:', statusCode);
         
         if (statusCode === 200) {
             setTimeout(() => {
@@ -72,10 +74,7 @@ return (
             </div>
         </div>
         <div className="flex flex-col ml-2.5 mt-4">
-            <span className="md:text-20 lg:text-24 font-bold">
-            Ein Plan für die ganze Familie
-            </span>
-            <span>Willkommen, bitte erstelle ein Konto.</span>
+            <span>Bitte registrieren Sie sich, um fortzufahren.</span>
         </div>
         <div className="w-full mt-8 md:mt-10">
             <TextInput
@@ -106,6 +105,17 @@ return (
             name="password"
             onChange={formik.handleChange}
             error={formik.errors.password || falseValues}
+            touched={formik.touched.password}
+            defaultValue=""
+        />
+        </div>
+        <div className="mt-6 w-full">
+            <TextInput
+            placeholder="Passwort bestätigen"
+            type="password"
+            name="confirmPassword"
+            onChange={formik.handleChange}
+            error={formik.errors.confirmPassword || falseValues}
             touched={formik.touched.password}
             defaultValue=""
         />

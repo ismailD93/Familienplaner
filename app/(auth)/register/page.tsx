@@ -16,8 +16,8 @@ const RegisterPage: FC<Props> = () => {
         <div className="w-full aspect-[425/348] relative">
           <NextImage
             fill
-            src={"/assets/Login.png"}
-            alt={"Login"}
+            src={"/assets/Register.png"}
+            alt={"Register"}
             className="object-contain"
           />
         </div>
