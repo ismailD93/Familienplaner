@@ -12,7 +12,7 @@ import { useRouter } from "next/navigation";
 
 const LoginForm: FC = ({}) => {
   const router = useRouter();
-  const { login, logout } = useAuth();
+  const { login } = useAuth();
   const [falseValues, setFalseValues] = useState<string | undefined>(undefined);
   const formik = useFormik({
     initialValues: {
@@ -101,21 +101,22 @@ const LoginForm: FC = ({}) => {
             Passwort vergessen?
           </Link>
         </div>
-        <div className="mt-10 md:px-8">
+        <div className="flex flex-col mt-10 gap-x-6">
           <Button
             className="w-full"
             type="submit"
             form="loginForm"
             label="Anmelden"
           />
-        </div>
-        <div className="mt-10 md:px-8">
-          <Button
-            className="w-full"
-            onClick={() => logout()}
-            type="button"
-            label="Logout"
-          />
+          <div className="flex mt-5 mx-auto">
+            <span>Noch kein Account ?</span>
+            <div
+              className="text-blue ml-4 underline underline-offset-2 font-semibold cursor-pointer"
+              onClick={() => router.push("/start?animation=register")}
+            >
+              Hier klicken zum Registrieren
+            </div>
+          </div>
         </div>
       </form>
       <div>

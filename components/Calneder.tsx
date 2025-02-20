@@ -84,14 +84,14 @@ const Calender: FC<CalenderProps> = ({ user, family }) => {
         <div className="mt-4 mb-4 cmd:mb-3 ml-6">
           <div className="flex max-cmd:flex-col max-lg:items-center max-lg:gap-y-3 select-none">
             <div className="flex gap-x-2 cmd:w-1/2 items-center">
-              <div className="flex items-center text-24 md:text-32 text-gray">
+              <div className="flex items-center text-16 font-semibold text-gray">
                 {selectedDate}
               </div>
               <div
                 onClick={() => setOpenDatePicker?.(true)}
                 className="text-blue rounded-md hover:bg-blue hover:text-white cursor-pointer size-8 flex items-center justify-center"
               >
-                <CalenderIcon className="size-5" />
+                <CalenderIcon className="size-4" />
               </div>
             </div>
             <div className="cmd:w-2/3 gap-x-2 flex items-center text-gray">
