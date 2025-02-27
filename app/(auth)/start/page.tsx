@@ -11,12 +11,12 @@ type Props = {
 
 const StartPage: FC<Props> = () => {
   return (
-    <div className="flex justify-between h-screen">
+    <div className="flex justify-between h-screen max-md:flex-col">
       <StartAnimation />
-      <div className="w-[45%]">
+      <div className="md:w-[45%]">
         <LoginForm />
       </div>
-      <div className="w-[45%]">
+      <div className="md:w-[45%]">
         <RegisterForm />
       </div>
     </div>

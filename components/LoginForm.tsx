@@ -8,11 +8,19 @@ import { useFormik } from "formik";
 import Button from "./Button";
 import getLoginFormSchema from "../validation/loginFormschema";
 import { useAuth } from "../context/AuthContext";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import NextImage from "next/image";
+import classNames from "classnames";
+import { Animation } from "./Animation";
 
 const LoginForm: FC = ({}) => {
   const router = useRouter();
   const { login } = useAuth();
+
+  const searchParams = useSearchParams();
+  const animation: Animation =
+    (searchParams.get("animation") as Animation) || "login";
+
   const [falseValues, setFalseValues] = useState<string | undefined>(undefined);
   const formik = useFormik({
     initialValues: {
@@ -56,11 +64,16 @@ const LoginForm: FC = ({}) => {
   });
 
   return (
-    <div className="h-full w-full flex flex-col items-center p-8 md:p-10">
+    <div
+      className={classNames(
+        "h-full w-full flex flex-col items-center md:p-10",
+        { "max-md:hidden": animation === "register" }
+      )}
+    >
       <form
         id="loginForm"
         onSubmit={formik.handleSubmit}
-        className="w-full md:max-w-[500px] max-w-full flex flex-col md:justify-center flex-1"
+        className="w-full md:max-w-[500px] max-w-full flex flex-col md:justify-center flex-1 max-md:p-8"
       >
         <div className="text-center w-full flex items-center">
           <Logo className="size-16" />{" "}
@@ -108,10 +121,10 @@ const LoginForm: FC = ({}) => {
             form="loginForm"
             label="Anmelden"
           />
-          <div className="flex mt-5 mx-auto">
+          <div className="flex max-lg:flex-col mt-5 mx-auto max-lg:text-center">
             <span>Noch kein Account ?</span>
             <div
-              className="text-blue ml-4 underline underline-offset-2 font-semibold cursor-pointer"
+              className="text-blue md:ml-4 underline underline-offset-2 font-semibold cursor-pointer"
               onClick={() => router.push("/start?animation=register")}
             >
               Hier klicken zum Registrieren
@@ -119,13 +132,15 @@ const LoginForm: FC = ({}) => {
           </div>
         </div>
       </form>
-      <div>
-        <Link
-          href="/support"
-          className="text-button underline underline-offset-8"
-        >
-          Hilfe & Kontakt
-        </Link>
+      <div className="bg-orange w-full h-1/2 flex md:flex-1 items-center justify-center relative flex-col md:hidden">
+        <div className="w-full aspect-[425/348] relative">
+          <NextImage
+            fill
+            src={"/assets/Login.png"}
+            alt={"Login"}
+            className="object-contain"
+          />
+        </div>
       </div>
     </div>
   );

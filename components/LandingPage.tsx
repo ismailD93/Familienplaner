@@ -1,5 +1,5 @@
 "use client";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { FC } from "react";
 
 interface LandingPageProps {
@@ -7,16 +7,15 @@ interface LandingPageProps {
 }
 
 const LandingPage: FC<LandingPageProps> = () => {
-  const router = useRouter();
   return (
     <div>
       <div>Landingpage</div>
-      <div
+      <Link
+        href={"/start"}
         className="w-full flex justify-center mt-20 cursor-pointer text-24"
-        onClick={() => router.push("/start")}
       >
         GO TO LOGIN
-      </div>
+      </Link>
     </div>
   );
 };
