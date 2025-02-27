@@ -8,7 +8,7 @@ const DashboardPage = async () => {
   const authToken = cookieStore.get("authToken")?.value;
 
   if (!authToken) {
-    redirect("/login");
+    redirect("/start?animation=login");
   }
   const user = {
     id: "1",

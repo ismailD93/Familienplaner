@@ -95,7 +95,7 @@ const InnerButton = ({
           })}
         >
           {label}
-          {!!icon && <div className="ml-6">{icon}</div>}
+          {!!icon && <div className="ml-2">{icon}</div>}
         </div>
       </div>
     </div>

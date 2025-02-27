@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  html,
+  body {
+    @apply text-black/10 antialiased;
+  }
+}
+
 :root {
   --background: #171717;
   --foreground: #ffffff;
