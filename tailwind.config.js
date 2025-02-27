@@ -65,6 +65,7 @@ module.exports = {
       red: "#D0312D",
       yellow: "#FFE500",
       orange: "#FFB266",
+      "white-80": "#f2f2f2",
     },
     fontSize: {
       10: [`${10 / 16}rem`, { lineHeight: `${13 / 16}rem` }],

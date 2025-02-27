@@ -1,7 +1,9 @@
+import LandingPage from "../components/LandingPage";
+
 const DashboardPage = async () => {
   return (
     <div>
-      <div>Landingpage</div>
+      <LandingPage />
     </div>
   );
 };
