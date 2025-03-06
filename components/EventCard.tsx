@@ -75,8 +75,8 @@ const EventCard: FC<EventCardProps> = ({
           </div>
         </div>
         <Button
-          className="my-auto max-md:mt-4 mx-auto"
-          variant="blue"
+          className="my-auto max-md:mt-4 max-md:mx-auto"
+          variant="dark-blue"
           label={"Bearbeiten"}
           icon={<BiChevronDown className="size-5" />}
         />
