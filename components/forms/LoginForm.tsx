@@ -1,18 +1,21 @@
 "use client";
 
+import Link from "next/link";
 import { FC, useState } from "react";
-import TextInput from "./TextInput";
-import { Logo } from "../icons/Logo";
+import TextInput from "../TextInput";
+import { Logo } from "../../icons/Logo";
 import { useFormik } from "formik";
-import Button from "./Button";
+import Button from "../Button";
+import getLoginFormSchema from "../../validation/loginFormschema";
+import { useAuth } from "../../context/AuthContext";
 import { useRouter, useSearchParams } from "next/navigation";
-import getRegisterFormSchema from "../validation/registerFormschema";
-import { Animation } from "./Animation";
-import classNames from "classnames";
 import NextImage from "next/image";
+import classNames from "classnames";
+import { Animation } from "../Animation";
 
-const RegisterForm: FC = ({}) => {
+const LoginForm: FC = ({}) => {
   const router = useRouter();
+  const { login } = useAuth();
 
   const searchParams = useSearchParams();
   const animation: Animation =
@@ -22,26 +25,22 @@ const RegisterForm: FC = ({}) => {
   const formik = useFormik({
     initialValues: {
       username: "",
-      email: "",
       password: "",
-      confirmPassword: "",
     },
-    validationSchema: getRegisterFormSchema(),
+    validationSchema: getLoginFormSchema(),
     validateOnBlur: false,
     validateOnChange: true,
     onSubmit: async (values) => {
       try {
-        const res = await fetch(`http://localhost:5140/api/account/register`, {
-          method: "PUT",
+        const res = await fetch(`http://localhost:5140/api/account/login`, {
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
             "Accept-Language": "de",
           },
           body: JSON.stringify({
             username: values.username,
-            email: values.email,
             password: values.password,
-            confirmPassword: values.confirmPassword,
           }),
         });
 
@@ -50,13 +49,14 @@ const RegisterForm: FC = ({}) => {
           throw new Error(`HTTP error! status: ${res.status}`);
         }
 
-        // Überprüfe den HTTP-Statuscode
-        const statusCode = res.status; // z.B. 200, 400, 500, etc.
+        const data = await res.json();
+        const loggedIn = login(data.token);
 
-        if (statusCode === 200) {
+        console.log(loggedIn, "LOGEDIND");
+        if (loggedIn) {
           setTimeout(() => {
-            router.push("/login");
-          }, 100);
+            router.push("/overview");
+          }, 200);
         }
       } catch (error) {
         console.error("Submitting information form failed", error);
@@ -68,11 +68,11 @@ const RegisterForm: FC = ({}) => {
     <div
       className={classNames(
         "h-full w-full flex flex-col items-center md:p-10",
-        { "max-md:hidden": animation === "login" }
+        { "max-md:hidden": animation === "register" }
       )}
     >
       <form
-        id="registerForm"
+        id="loginForm"
         onSubmit={formik.handleSubmit}
         className="w-full md:max-w-[500px] max-w-full flex flex-col md:justify-center flex-1 max-md:p-8"
       >
@@ -83,7 +83,10 @@ const RegisterForm: FC = ({}) => {
           </div>
         </div>
         <div className="flex flex-col ml-2.5 mt-4">
-          <span>Bitte registrieren Sie sich, um fortzufahren.</span>
+          <span className="md:text-20 lg:text-24 font-bold">
+            Ein Plan für die ganze Familie
+          </span>
+          <span>Willkommen zurück, bitte melde dich in dein Konto ein</span>
         </div>
         <div className="w-full mt-8 md:mt-10">
           <TextInput
@@ -93,17 +96,6 @@ const RegisterForm: FC = ({}) => {
             onChange={formik.handleChange}
             error={formik.errors.username || falseValues}
             touched={formik.touched.username}
-            defaultValue=""
-          />
-        </div>
-        <div className="w-full mt-6">
-          <TextInput
-            placeholder="Email"
-            type="text"
-            name="email"
-            onChange={formik.handleChange}
-            error={formik.errors.email || falseValues}
-            touched={formik.touched.email}
             defaultValue=""
           />
         </div>
@@ -118,29 +110,26 @@ const RegisterForm: FC = ({}) => {
             defaultValue=""
           />
         </div>
-        <div className="mt-6 w-full">
-          <TextInput
-            placeholder="Passwort bestätigen"
-            type="password"
-            name="confirmPassword"
-            onChange={formik.handleChange}
-            error={formik.errors.confirmPassword || falseValues}
-            touched={formik.touched.password}
-            defaultValue=""
-          />
+        <div className="mt-2 w-full">
+          <Link className="text-button-small" href="/passwort">
+            Passwort vergessen?
+          </Link>
         </div>
         <div className="flex flex-col mt-10 gap-x-6">
           <Button
             className="w-full"
             type="submit"
-            form="registerForm"
-            label="Registrieren"
+            form="loginForm"
+            label="Anmelden"
           />
-          <div
-            className="mx-auto mt-5 text-blue underline underline-offset-4 font-semibold cursor-pointer"
-            onClick={() => router.push("/start?animation=login")}
-          >
-            Zurück zum Anmelden
+          <div className="flex max-lg:flex-col mt-5 mx-auto max-lg:text-center">
+            <span>Noch kein Account ?</span>
+            <div
+              className="text-blue md:ml-4 underline underline-offset-2 font-semibold cursor-pointer"
+              onClick={() => router.push("/start?animation=register")}
+            >
+              Hier klicken zum Registrieren
+            </div>
           </div>
         </div>
       </form>
@@ -148,7 +137,7 @@ const RegisterForm: FC = ({}) => {
         <div className="w-full aspect-[425/348] relative">
           <NextImage
             fill
-            src={"/assets/Register.png"}
+            src={"/assets/Login.png"}
             alt={"Login"}
             className="object-contain"
           />
@@ -158,4 +147,4 @@ const RegisterForm: FC = ({}) => {
   );
 };
 
-export default RegisterForm;
+export default LoginForm;

@@ -2,6 +2,8 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import Calender from "../../../components/Calneder";
 import { User } from "../../../types";
+import { getCalenderId } from "../../fetchMethods/getCalenderId";
+import CreateOrJoinCalender from "../../../components/CreateOrJoinCalender";
 
 const DashboardPage = async () => {
   const cookieStore = cookies();
@@ -27,8 +29,13 @@ const DashboardPage = async () => {
     { id: "7", name: "Oma", status: "online" },
     { id: "8", name: "Opa", status: "offline" },
   ];
+  const calenderId = await getCalenderId(authToken);
 
-  return <Calender user={user} family={familiy} />;
+  if (!calenderId) {
+    return <CreateOrJoinCalender />;
+  } else {
+    return <Calender user={user} family={familiy} />;
+  }
 };
 
 export default DashboardPage;

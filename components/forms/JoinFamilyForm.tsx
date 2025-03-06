@@ -1,19 +1,16 @@
 "use client";
 
-import Link from "next/link";
 import { FC, useState } from "react";
-import TextInput from "./TextInput";
-import { Logo } from "../icons/Logo";
+import TextInput from "../TextInput";
 import { useFormik } from "formik";
-import Button from "./Button";
-import getLoginFormSchema from "../validation/loginFormschema";
-import { useAuth } from "../context/AuthContext";
+import Button from "../Button";
+import { useAuth } from "../../context/AuthContext";
 import { useRouter, useSearchParams } from "next/navigation";
-import NextImage from "next/image";
 import classNames from "classnames";
-import { Animation } from "./Animation";
+import { Animation } from "../Animation";
+import joinFamilyFormschema from "../../validation/joinFamilyFormschema";
 
-const LoginForm: FC = ({}) => {
+const JoinFamilyForm: FC = ({}) => {
   const router = useRouter();
   const { login } = useAuth();
 
@@ -27,7 +24,7 @@ const LoginForm: FC = ({}) => {
       username: "",
       password: "",
     },
-    validationSchema: getLoginFormSchema(),
+    validationSchema: joinFamilyFormschema(),
     validateOnBlur: false,
     validateOnChange: true,
     onSubmit: async (values) => {
@@ -52,10 +49,11 @@ const LoginForm: FC = ({}) => {
         const data = await res.json();
         const loggedIn = login(data.token);
 
+        console.log(loggedIn, "LOGEDIND");
         if (loggedIn) {
           setTimeout(() => {
             router.push("/overview");
-          }, 100);
+          }, 200);
         }
       } catch (error) {
         console.error("Submitting information form failed", error);
@@ -65,31 +63,19 @@ const LoginForm: FC = ({}) => {
 
   return (
     <div
-      className={classNames(
-        "h-full w-full flex flex-col items-center md:p-10",
-        { "max-md:hidden": animation === "register" }
-      )}
+      className={classNames("h-full w-full flex flex-col items-center", {
+        "max-md:hidden": animation === "register",
+      })}
     >
       <form
         id="loginForm"
         onSubmit={formik.handleSubmit}
-        className="w-full md:max-w-[500px] max-w-full flex flex-col md:justify-center flex-1 max-md:p-8"
+        className="w-full md:max-w-[500px] max-w-full flex flex-col md:justify-center flex-1"
       >
-        <div className="text-center w-full flex items-center">
-          <Logo className="size-16" />{" "}
-          <div className="text-52 mt-auto font-bold text-blue !leading-none">
-            UMI
-          </div>
-        </div>
-        <div className="flex flex-col ml-2.5 mt-4">
-          <span className="md:text-20 lg:text-24 font-bold">
-            Ein Plan für die ganze Familie
-          </span>
-          <span>Willkommen zurück, bitte melde dich in dein Konto ein</span>
-        </div>
+        Um einer Familie beitreten zu können bitte folgende Felder ausfüllen
         <div className="w-full mt-8 md:mt-10">
           <TextInput
-            placeholder="Username"
+            placeholder="Familienname / Kalendername"
             type="text"
             name="username"
             onChange={formik.handleChange}
@@ -100,7 +86,7 @@ const LoginForm: FC = ({}) => {
         </div>
         <div className="mt-6 w-full">
           <TextInput
-            placeholder="Passwort"
+            placeholder="Autenthifizierungscode"
             type="password"
             name="password"
             onChange={formik.handleChange}
@@ -109,41 +95,19 @@ const LoginForm: FC = ({}) => {
             defaultValue=""
           />
         </div>
-        <div className="mt-2 w-full">
-          <Link className="text-button-small" href="/passwort">
-            Passwort vergessen?
-          </Link>
-        </div>
         <div className="flex flex-col mt-10 gap-x-6">
           <Button
             className="w-full"
             type="submit"
+            size="14"
+            variant="blue-outline"
             form="loginForm"
-            label="Anmelden"
+            label="Beitreten"
           />
-          <div className="flex max-lg:flex-col mt-5 mx-auto max-lg:text-center">
-            <span>Noch kein Account ?</span>
-            <div
-              className="text-blue md:ml-4 underline underline-offset-2 font-semibold cursor-pointer"
-              onClick={() => router.push("/start?animation=register")}
-            >
-              Hier klicken zum Registrieren
-            </div>
-          </div>
         </div>
       </form>
-      <div className="bg-orange w-full h-1/2 flex md:flex-1 items-center justify-center relative flex-col md:hidden">
-        <div className="w-full aspect-[425/348] relative">
-          <NextImage
-            fill
-            src={"/assets/Login.png"}
-            alt={"Login"}
-            className="object-contain"
-          />
-        </div>
-      </div>
     </div>
   );
 };
 
-export default LoginForm;
+export default JoinFamilyForm;
