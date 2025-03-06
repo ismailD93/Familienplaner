@@ -1,26 +1,69 @@
-'use client'
+"use client";
 import { FC, useState } from "react";
+import EventCard from "./EventCard";
+import { User } from "../types";
+import { addDays } from "date-fns";
 
-interface OverviewProps{
-    name?:string
+interface OverviewProps {
+  name?: string;
 }
+type Event = {
+  id: number;
+  title: string;
+  location: string;
+  date: Date;
+  participants: User[];
+};
+const Overview: FC<OverviewProps> = ({}) => {
+  const [activeTab, setActiveTab] = useState<"upcoming" | "past" | "canceled">(
+    "upcoming"
+  );
 
-const Overview: FC<OverviewProps> = ({name}) => {
-  const [activeTab, setActiveTab] = useState<"upcoming" | "past" | "canceled">("upcoming");
-console.log(name)
-  const events = {
-    upcoming: [
-      { id: 1, title: "Familientreffen", date: "2025-01-30", location: "Online", participants: ["Papa", "Mama"] },
-      { id: 2, title: "Geburtstagsfeier", date: "2025-02-10", location: "Zuhause", participants: ["Lena", "Tom"] },
-    ],
-    past: [
-      { id: 3, title: "Weihnachtsessen", date: "2024-12-25", location: "Oma's Haus", participants: ["Familie Müller"] },
-    ],
-    canceled: [
-      { id: 4, title: "Kinoabend", date: "2025-01-15", location: "Kino Berlin", participants: ["Tom", "Lena"] },
-    ],
-  };
+  const date = new Date();
+  const test = addDays(date, 1);
+  const test1 = addDays(date, 2);
+  const test2 = addDays(date, 3);
 
+  const events: Event[] = [
+    {
+      id: 1,
+      title: "Familientreffen",
+      date: date,
+      location: "Online",
+      participants: [
+        { id: "2", name: "Metehan", status: "online" },
+        { id: "3", name: "Uemit", status: "online" },
+      ],
+    },
+    {
+      id: 2,
+      title: "Geburtstagsfeier",
+      date: test,
+      location: "Zuhause",
+      participants: [
+        { id: "7", name: "Oma", status: "online" },
+        { id: "8", name: "Opa", status: "offline" },
+      ],
+    },
+    {
+      id: 3,
+      title: "Weihnachtsessen",
+      date: test1,
+      location: "Oma's Haus",
+      participants: [{ id: "4", name: "Kind1", status: "online" }],
+    },
+    {
+      id: 4,
+      title: "Kinoabend",
+      date: test2,
+      location: "Kino Berlin",
+      participants: [
+        { id: "4", name: "Kind1", status: "online" },
+        { id: "5", name: "Kind2", status: "offline" },
+        { id: "6", name: "Kind3", status: "offline" },
+      ],
+    },
+  ];
   return (
     <div className="p-6 bg-black-30 min-h-screen">
       {/* Tab-Header */}
@@ -59,21 +102,14 @@ console.log(name)
 
       {/* Ereignisliste */}
       <div className="mt-6 space-y-4">
-        {events[activeTab].map((event) => (
-          <div
-            key={event.id}
-            className="bg-white border border-black-50 rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow"
-          >
-            <h3 className="text-16 font-bold text-black">{event.title}</h3>
-            <p className="text-14 text-black-60 mt-1">📅 {event.date}</p>
-            <p className="text-14 text-black-60 mt-1">📍 {event.location}</p>
-            <p className="text-14 text-black-60 mt-1">
-              👥 Teilnehmer: {event.participants.join(", ")}
-            </p>
-            <button className="mt-4 bg-blue text-white text-14 font-semibold px-4 py-2 rounded-lg hover:bg-blue-light transition">
-              Bearbeiten
-            </button>
-          </div>
+        {events.map((event, index) => (
+          <EventCard
+            key={index}
+            title={event.title}
+            date={event.date}
+            location={event.location}
+            participants={event.participants}
+          />
         ))}
       </div>
     </div>

@@ -7,15 +7,11 @@ const cookieStore = cookies();
 const authToken = cookieStore.get("authToken")?.value;
 
 if (!authToken) {
-  redirect("/login");
+  redirect("/start?animation=login");
 }
 
 const OverviewPage = async () => {
-  return (
-    <div>
-      <Overview />
-    </div>
-  );
+  return <Overview />;
 };
 
 export default OverviewPage;
