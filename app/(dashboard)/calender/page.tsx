@@ -4,6 +4,7 @@ import Calender from "../../../components/Calneder";
 import { User } from "../../../types";
 import { getCalenderId } from "../../fetchMethods/getCalenderId";
 import CreateOrJoinCalender from "../../../components/CreateOrJoinCalender";
+import { getAllCalenderEvents } from "../../fetchMethods/getAllCalenderEvents";
 
 const DashboardPage = async () => {
   const cookieStore = cookies();
@@ -19,22 +20,14 @@ const DashboardPage = async () => {
     role: "admin",
   } as User;
 
-  const familiy: User[] = [
-    user,
-    { id: "2", name: "Metehan", status: "online" },
-    { id: "3", name: "Uemit", status: "online" },
-    { id: "4", name: "Kind1", status: "online" },
-    { id: "5", name: "Kind2", status: "offline" },
-    { id: "6", name: "Kind3", status: "offline" },
-    { id: "7", name: "Oma", status: "online" },
-    { id: "8", name: "Opa", status: "offline" },
-  ];
   const calenderId = await getCalenderId(authToken);
 
   if (!calenderId) {
     return <CreateOrJoinCalender />;
   } else {
-    return <Calender user={user} family={familiy} />;
+    const allEvents = await getAllCalenderEvents(authToken, calenderId);
+
+    return <Calender user={user} family={allEvents.familyMembers} />;
   }
 };
 

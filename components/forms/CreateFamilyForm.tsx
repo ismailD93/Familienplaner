@@ -1,58 +1,48 @@
 "use client";
 
-import { FC, useState } from "react";
+import { FC } from "react";
 import TextInput from "../TextInput";
 import { useFormik } from "formik";
 import Button from "../Button";
-import { useAuth } from "../../context/AuthContext";
 import { useRouter, useSearchParams } from "next/navigation";
 import classNames from "classnames";
 import { Animation } from "../Animation";
 import createFamilyFormschema from "../../validation/createFamilyFormschema";
+import { useAuth } from "../../context/AuthContext";
+import { createCalender } from "../../app/fetchMethods/createCalender";
+import { assignToCalender } from "../../app/fetchMethods/asignToCalender";
 
 const CreateFamilyForm: FC = ({}) => {
   const router = useRouter();
-  const { login } = useAuth();
-
+  const { authToken } = useAuth();
   const searchParams = useSearchParams();
   const animation: Animation =
     (searchParams.get("animation") as Animation) || "login";
 
-  const [falseValues, setFalseValues] = useState<string | undefined>(undefined);
   const formik = useFormik({
     initialValues: {
-      username: "",
-      password: "",
+      familyName: "",
+      authentication: "",
     },
     validationSchema: createFamilyFormschema(),
     validateOnBlur: false,
     validateOnChange: true,
     onSubmit: async (values) => {
       try {
-        const res = await fetch(`http://localhost:5140/api/account/login`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Accept-Language": "de",
-          },
-          body: JSON.stringify({
-            username: values.username,
-            password: values.password,
-          }),
-        });
+        if (!authToken) return null;
+        const create = await createCalender(authToken, values.familyName);
 
-        if (!res.ok) {
-          setFalseValues("Anmelde Daten falsch!");
-          throw new Error(`HTTP error! status: ${res.status}`);
+        if (!create.id) {
+          console.log("Error");
         }
+        const assignUserToCalender = await assignToCalender(
+          authToken,
+          create.id
+        );
 
-        const data = await res.json();
-        const loggedIn = login(data.token);
-
-        console.log(loggedIn, "LOGEDIND");
-        if (loggedIn) {
+        if (assignUserToCalender.succeeded) {
           setTimeout(() => {
-            router.push("/overview");
+            router.push("/calender");
           }, 200);
         }
       } catch (error) {
@@ -77,10 +67,10 @@ const CreateFamilyForm: FC = ({}) => {
           <TextInput
             placeholder="Familienname / Kalendername"
             type="text"
-            name="username"
+            name="familyName"
             onChange={formik.handleChange}
-            error={formik.errors.username || falseValues}
-            touched={formik.touched.username}
+            error={formik.errors.familyName}
+            touched={formik.touched.familyName}
             defaultValue=""
           />
         </div>
@@ -88,10 +78,10 @@ const CreateFamilyForm: FC = ({}) => {
           <TextInput
             placeholder="Autenthifizierungscode"
             type="password"
-            name="password"
+            name="authentication"
             onChange={formik.handleChange}
-            error={formik.errors.password || falseValues}
-            touched={formik.touched.password}
+            error={formik.errors.authentication}
+            touched={formik.touched.authentication}
             defaultValue=""
           />
         </div>

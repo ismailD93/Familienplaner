@@ -29,17 +29,19 @@ const JoinFamilyForm: FC = ({}) => {
     validateOnChange: true,
     onSubmit: async (values) => {
       try {
-        const res = await fetch(`http://localhost:5140/api/account/login`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Accept-Language": "de",
-          },
-          body: JSON.stringify({
-            username: values.username,
-            password: values.password,
-          }),
-        });
+        const res = await fetch(
+          `http://localhost:5140/api/calender/addCalender`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Accept-Language": "de",
+            },
+            body: JSON.stringify({
+              name: values.username,
+            }),
+          }
+        );
 
         if (!res.ok) {
           setFalseValues("Anmelde Daten falsch!");
