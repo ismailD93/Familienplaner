@@ -87,7 +87,6 @@ const DatePickerComponent: FC<InputComponentProps> = ({
       />
       <Button
         onClick={() => setDate?.(selected)}
-        roundedBottom
         label={"Auswahl bestätigen"}
         className="w-full"
         size="14"

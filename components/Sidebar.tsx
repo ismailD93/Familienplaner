@@ -11,12 +11,10 @@ import { GoGear } from "react-icons/go";
 import classNames from "classnames";
 
 type NavigationProps = {
-  role?: string;
-  name?: string;
-  isSuperAdmin?: boolean;
+  disableButtons?: boolean;
 };
 
-const Sidebar: FC<NavigationProps> = ({}) => {
+const Sidebar: FC<NavigationProps> = ({ disableButtons }) => {
   const router = useRouter();
   const { logout } = useAuth();
   const pathname = usePathname();
@@ -47,15 +45,19 @@ const Sidebar: FC<NavigationProps> = ({}) => {
             {linkItems.map((item, index) => {
               return (
                 <div
-                  onClick={() => router.push(item.link)}
+                  onClick={() => {
+                    if (!disableButtons) router.push(item.link);
+                  }}
                   key={index}
                   className={classNames(
                     "flex flex-col items-center p-2 gap-y-1.5 rounded-md",
                     {
-                      "text-blue": pathname === item.link,
-                      "text-gray/80": pathname !== item.link,
+                      "cursor-pointer": !disableButtons,
+                      "text-gray/60": disableButtons,
+                      "text-blue": pathname === item.link && !disableButtons,
+                      "text-gray/80": pathname !== item.link && !disableButtons,
                       "hover:bg-blue hover:bg-opacity-15 cursor-pointer":
-                        pathname !== item.link,
+                        pathname !== item.link && !disableButtons,
                     }
                   )}
                 >
@@ -77,13 +79,18 @@ const Sidebar: FC<NavigationProps> = ({}) => {
               <span className="hidden text-gray md:block">Ausloggen</span>
             </div>
             <div
-              onClick={() => router.push("/settings")}
+              onClick={() => {
+                if (!disableButtons) router.push("/settings");
+              }}
               className={classNames(
-                "flex flex-col items-center p-2 rounded-md gap-y-1.5 cursor-pointer",
+                "flex flex-col items-center p-2 rounded-md gap-y-1.5",
                 {
-                  "text-blue": pathname === "/settings",
-                  "text-gray/80": pathname !== "/settings",
-                  "hover:text-blue cursor-pointer": pathname !== "/settings",
+                  "cursor-pointer": !disableButtons,
+                  "text-gray/60": disableButtons,
+                  "text-blue": pathname === "/settings" && !disableButtons,
+                  "text-gray/80": pathname === "/settings" && !disableButtons,
+                  "hover:bg-blue hover:bg-opacity-15 cursor-pointer":
+                    pathname === "/settings" && !disableButtons,
                 }
               )}
             >
