@@ -10,7 +10,6 @@ export const assignToCalender = async (token: string, calendarId: number) => {
       },
     }
   );
-  console.log(assignToCalender, "");
   if (assignToCalender.status === 404) {
     return undefined;
   } else {

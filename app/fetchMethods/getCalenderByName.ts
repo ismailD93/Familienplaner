@@ -1,16 +1,16 @@
-export const createCalender = async (token: string, name: string) => {
+export const getCalenderByName = async (
+  token: string,
+  calenderName: string
+) => {
   const calender = await fetch(
-    `http://localhost:5140/api/calendar/addCalendar`,
+    `http://localhost:5140/api/calendar/getByName?name=${calenderName}`,
     {
-      method: "PUT",
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
         "Accept-Language": "de",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({
-        name: name,
-      }),
     }
   );
   if (calender.status === 404) {

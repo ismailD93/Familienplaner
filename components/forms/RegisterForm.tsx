@@ -55,7 +55,7 @@ const RegisterForm: FC = ({}) => {
 
         if (statusCode === 200) {
           setTimeout(() => {
-            router.push("/login");
+            router.push("/start?animation=login");
           }, 100);
         }
       } catch (error) {

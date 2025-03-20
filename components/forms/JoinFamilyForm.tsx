@@ -4,16 +4,17 @@ import { FC, useState } from "react";
 import TextInput from "../TextInput";
 import { useFormik } from "formik";
 import Button from "../Button";
-import { useAuth } from "../../context/AuthContext";
 import { useRouter, useSearchParams } from "next/navigation";
 import classNames from "classnames";
 import { Animation } from "../Animation";
 import joinFamilyFormschema from "../../validation/joinFamilyFormschema";
+import { useAuth } from "../../context/AuthContext";
+import { getCalenderByName } from "../../app/fetchMethods/getCalenderByName";
+import { assignToCalender } from "../../app/fetchMethods/asignToCalender";
 
 const JoinFamilyForm: FC = ({}) => {
   const router = useRouter();
-  const { login } = useAuth();
-
+  const { authToken } = useAuth();
   const searchParams = useSearchParams();
   const animation: Animation =
     (searchParams.get("animation") as Animation) || "login";
@@ -21,48 +22,29 @@ const JoinFamilyForm: FC = ({}) => {
   const [falseValues, setFalseValues] = useState<string | undefined>(undefined);
   const formik = useFormik({
     initialValues: {
-      username: "",
-      password: "",
+      familyName: "",
+      auth: "",
     },
     validationSchema: joinFamilyFormschema(),
     validateOnBlur: false,
     validateOnChange: true,
     onSubmit: async (values) => {
       try {
-        const res = await fetch(
-          `http://localhost:5140/api/calender/addCalender`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "Accept-Language": "de",
-            },
-            body: JSON.stringify({
-              name: values.username,
-            }),
-          }
-        );
+        if (!authToken) return;
+        const data = await getCalenderByName(authToken, values.familyName);
 
-        if (!res.ok) {
-          setFalseValues("Anmelde Daten falsch!");
-          throw new Error(`HTTP error! status: ${res.status}`);
+        if (!data) {
+          setFalseValues("Kalender existiert nicht!");
+          throw new Error(`HTTP error! status: ${data}`);
         }
+        await assignToCalender(authToken, data.id);
 
-        const data = await res.json();
-        const loggedIn = login(data.token);
-
-        console.log(loggedIn, "LOGEDIND");
-        if (loggedIn) {
-          setTimeout(() => {
-            router.push("/overview");
-          }, 200);
-        }
+        router.refresh();
       } catch (error) {
         console.error("Submitting information form failed", error);
       }
     },
   });
-
   return (
     <div
       className={classNames("h-full w-full flex flex-col items-center", {
@@ -79,10 +61,10 @@ const JoinFamilyForm: FC = ({}) => {
           <TextInput
             placeholder="Familienname / Kalendername"
             type="text"
-            name="username"
+            name="familyName"
             onChange={formik.handleChange}
-            error={formik.errors.username || falseValues}
-            touched={formik.touched.username}
+            error={formik.errors.familyName || falseValues}
+            touched={formik.touched.familyName}
             defaultValue=""
           />
         </div>
@@ -92,8 +74,8 @@ const JoinFamilyForm: FC = ({}) => {
             type="password"
             name="password"
             onChange={formik.handleChange}
-            error={formik.errors.password || falseValues}
-            touched={formik.touched.password}
+            error={formik.errors.auth || falseValues}
+            touched={formik.touched.auth}
             defaultValue=""
           />
         </div>

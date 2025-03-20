@@ -52,12 +52,10 @@ const LoginForm: FC = ({}) => {
         const data = await res.json();
         const loggedIn = login(data.token);
 
-        console.log(loggedIn, "LOGEDIND");
-        if (loggedIn) {
-          setTimeout(() => {
-            router.push("/overview");
-          }, 200);
+        if (!loggedIn) {
+          return new Error(`Login Error: ${res.status}`);
         }
+        router.refresh();
       } catch (error) {
         console.error("Submitting information form failed", error);
       }

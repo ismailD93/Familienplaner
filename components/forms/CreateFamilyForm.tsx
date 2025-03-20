@@ -33,7 +33,7 @@ const CreateFamilyForm: FC = ({}) => {
         const create = await createCalender(authToken, values.familyName);
 
         if (!create.id) {
-          console.log("Error");
+          console.error("Error");
         }
         const assignUserToCalender = await assignToCalender(
           authToken,
