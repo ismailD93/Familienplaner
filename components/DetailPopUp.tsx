@@ -1,36 +1,84 @@
 "use client";
 
 import classNames from "classnames";
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
+import { User } from "../types";
+import DateInput from "./DateInput";
+import {
+  addMinutes,
+  addMonths,
+  format,
+  setMilliseconds,
+  setSeconds,
+} from "date-fns";
+import TimeSelect from "./TimeSelect";
+import { useFormik } from "formik";
+import eventFormSchema from "../validation/eventFormSchema";
+import { createEvent } from "../app/fetchMethods/createEvent";
+import { useRouter } from "next/navigation";
 
 interface DetailPopUpProps {
   open: boolean;
   setClose: () => void;
+  user?: User;
+  date?: Date;
 }
 
-// Funktion zum Generieren der 15-Minuten-Schritte
-const generateTimeOptions = (): string[] => {
-  const times: string[] = [];
-  for (let hour = 0; hour < 24; hour++) {
-    for (let minute = 0; minute < 60; minute += 15) {
-      const formattedTime = `${String(hour).padStart(2, "0")}:${String(
-        minute
-      ).padStart(2, "0")}`;
-      times.push(formattedTime);
-    }
-  }
-  return times;
-};
+const DetailPopUp: FC<DetailPopUpProps> = ({ open, setClose, date, user }) => {
+  const start = roundTime();
+  const router = useRouter();
+  const [dateValueStart, setDateValueStart] = useState<Date>(
+    date || new Date()
+  );
+  const [dateValueEnd, setDateValueStartEnd] = useState<Date>(
+    date || new Date()
+  );
 
-const DetailPopUp: FC<DetailPopUpProps> = ({ open, setClose }) => {
-  const [title, setTitle] = useState("");
+  const formik = useFormik({
+    initialValues: {
+      text: "",
+      startTime: start,
+      endTime: start,
+      dateStart: dateValueStart.toDateString(),
+      dateEnd:
+        dateValueEnd < dateValueStart
+          ? dateValueStart.toDateString()
+          : dateValueEnd.toDateString(),
+    },
+    validateOnBlur: false,
+    validationSchema: eventFormSchema(),
+    validateOnChange: true,
+    onSubmit: async (values) => {
+      try {
+        if (!user) return;
+        const response = await createEvent(user?.name, {
+          title: values.text,
+          description: "test",
+          startDate: values.dateStart,
+          endDate: values.dateEnd,
+          startTime: values.startTime,
+          endTime: values.endTime,
+        });
+
+        if (response) {
+          setClose?.();
+          router.refresh();
+        }
+      } catch (error) {
+        console.error("Submitting information form failed", error);
+      }
+    },
+  });
+
   const [note, setNote] = useState("");
   const [reminder, setReminder] = useState("none"); // Initialwert für Erinnerung
 
-  const handleSave = () => {
-    console.log({ title, note, reminder });
-  };
-
+  // const parsedDate = format(date || new Date(), "dd.MM.yyyy");
+  useEffect(() => {
+    if (!date) return;
+    setDateValueStart(date);
+    setDateValueStartEnd(date);
+  }, [date]);
   return (
     <div className={classNames({ "p-6": open })}>
       {/* Dialog */}
@@ -38,15 +86,20 @@ const DetailPopUp: FC<DetailPopUpProps> = ({ open, setClose }) => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-lg w-full max-w-lg p-6 select-none">
             <h2 className="text-xl font-bold mb-4 text-black">Detail</h2>
-            <form className="space-y-4">
+            <form
+              id="saveEvent"
+              onSubmit={formik.handleSubmit}
+              className="space-y-4"
+            >
               <div>
                 <label className="block text-sm font-medium mb-1 text-black-60">
                   Ereignistitel
                 </label>
                 <input
                   type="text"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
+                  name="text"
+                  value={formik.values.text}
+                  onChange={formik.handleChange}
                   className="w-full px-3 py-2 border border-black-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue"
                   placeholder="Titel eingeben"
                 />
@@ -57,25 +110,39 @@ const DetailPopUp: FC<DetailPopUpProps> = ({ open, setClose }) => {
                   <label className="block text-sm font-medium mb-1 text-black-60">
                     Zeit von
                   </label>
-                  <select className="w-full px-3 py-2 border border-black-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue">
-                    {generateTimeOptions().map((time) => (
-                      <option key={time} value={time}>
-                        {time}
-                      </option>
-                    ))}
-                  </select>
+                  <TimeSelect
+                    name="startTime"
+                    setTime={(time) => {
+                      if (time) {
+                        formik.setFieldValue(
+                          "startTime",
+                          `${time.hour}:${time.minute}`
+                        );
+                      }
+                    }}
+                    error={formik.errors.startTime}
+                    selectedValue={formik.values.startTime}
+                    touched={formik.touched.startTime}
+                  />
                 </div>
                 <div className="flex-1">
                   <label className="block text-sm font-medium mb-1 text-black-60">
                     Zeit bis
                   </label>
-                  <select className="w-full px-3 py-2 border border-black-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue">
-                    {generateTimeOptions().map((time) => (
-                      <option key={time} value={time}>
-                        {time}
-                      </option>
-                    ))}
-                  </select>
+                  <TimeSelect
+                    name="endTime"
+                    setTime={(time) => {
+                      if (time) {
+                        formik.setFieldValue(
+                          "endTime",
+                          `${time.hour}:${time.minute}`
+                        );
+                      }
+                    }}
+                    error={formik.errors.endTime}
+                    selectedValue={formik.values.endTime}
+                    touched={formik.touched.endTime}
+                  />
                 </div>
                 <div className="flex-1">
                   <label className="block text-sm font-medium mb-1 text-black-60">
@@ -101,18 +168,44 @@ const DetailPopUp: FC<DetailPopUpProps> = ({ open, setClose }) => {
                   <label className="block text-sm font-medium mb-1 text-black-60">
                     Datum von
                   </label>
-                  <input
-                    type="date"
-                    className="w-full px-3 py-2 border border-black-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue"
+                  <DateInput
+                    selected={dateValueStart}
+                    minDate={date}
+                    maxDate={addMonths(new Date(), 12)}
+                    startDate={date}
+                    name="dateStart"
+                    error={formik.errors.dateStart}
+                    onChange={(date) => {
+                      if (date) {
+                        setDateValueStart(date);
+                        formik.setFieldValue("dateStart", date);
+                      }
+                    }}
                   />
                 </div>
                 <div className="flex-1">
                   <label className="block text-sm font-medium mb-1 text-black-60">
                     Datum bis
                   </label>
-                  <input
-                    type="date"
-                    className="w-full px-3 py-2 border border-black-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue"
+                  <DateInput
+                    selected={
+                      dateValueEnd < dateValueStart
+                        ? dateValueStart
+                        : dateValueEnd
+                    }
+                    minDate={date}
+                    error={formik.errors.dateEnd}
+                    maxDate={addMonths(new Date(), 12)}
+                    name={"dateEnd"}
+                    onChange={(date) => {
+                      if (date) {
+                        setDateValueStartEnd(date);
+                        formik.setFieldValue(
+                          "dateEnd",
+                          format(date, "yyyy-MM-dd")
+                        );
+                      }
+                    }}
                   />
                 </div>
               </div>
@@ -156,7 +249,7 @@ const DetailPopUp: FC<DetailPopUpProps> = ({ open, setClose }) => {
                 Abbrechen
               </button>
               <button
-                onClick={handleSave}
+                form="saveEvent"
                 className="px-4 py-2 bg-blue text-white rounded-lg hover:bg-blue-light"
               >
                 Speichern
@@ -170,3 +263,15 @@ const DetailPopUp: FC<DetailPopUpProps> = ({ open, setClose }) => {
 };
 
 export default DetailPopUp;
+
+const roundTime = () => {
+  const now = new Date();
+  const minutes = now.getMinutes();
+  const remainder = 15 - (minutes % 15);
+  const nextQuarter = addMinutes(now, remainder);
+
+  const rounded = setMilliseconds(setSeconds(nextQuarter, 0), 0);
+
+  const start = format(rounded, "HH:mm");
+  return start;
+};

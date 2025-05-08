@@ -1,9 +1,9 @@
-export const getAllCalenderEvents = async (
+export const getAllFamilyMembers = async (
   token: string,
   calenderId: number
 ) => {
   const events = await fetch(
-    `http://localhost:5140/api/event/getAllEventsFromCalendar?calendarId=${calenderId}`,
+    `http://localhost:5140/api/calendar/getBy${calenderId}`,
     {
       method: "GET",
       headers: {
