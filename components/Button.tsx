@@ -12,7 +12,7 @@ interface Props
   target?: string;
   rel?: string;
   type?: "button" | "submit";
-  variant?: "blue" | "blue-outline" | "dark-blue";
+  variant?: "blue" | "blue-outline" | "dark-blue" | "grey-outline";
   size?: "16" | "14";
   icon?: ReactNode;
 }
@@ -84,6 +84,8 @@ const InnerButton = ({
             variant === "dark-blue" && !disabled,
           "bg-white-80 hover:bg-blue/80 text-blue hover:text-white-80 border-blue":
             variant === "blue-outline" && !disabled,
+          "bg-white-80 hover:bg-gray/80 text-black hover:text-white-80 border-gray":
+            variant === "grey-outline" && !disabled,
         }
       )}
     >

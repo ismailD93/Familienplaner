@@ -14,6 +14,7 @@ import DatePickerModal from "./modal/DatePickerModal";
 import DatePickerComponent from "./DatePickerComponent";
 import { Event, User } from "../types";
 import MoreEventModal from "./modal/MoreEventModal";
+import EventDetail from "./EventDetail";
 
 interface CalenderProps {
   name?: string;
@@ -28,7 +29,9 @@ const Calender: FC<CalenderProps> = ({ user, family, events }) => {
   const weekdays: { weekday: string; date: Date }[] = [];
   const [extraEvents, setExtraEvents] = useState<Event[]>([]);
   const [extraEventsOpen, setExtraEventsOpen] = useState(false);
-
+  const [openEventDetail, setOpenEventDetail] = useState<Event | undefined>(
+    undefined
+  );
   const [currentPage, setCurrentPage] = useState(0);
   const [expand, setExpand] = useState<7 | 14>(7);
   const [calendarEntry, setCalendarEntry] = useState<
@@ -277,7 +280,7 @@ const Calender: FC<CalenderProps> = ({ user, family, events }) => {
                                       <div
                                         onClick={(e) => {
                                           e.stopPropagation();
-                                          console.log("Event clicked:", event);
+                                          setOpenEventDetail(event);
                                         }}
                                         className="rounded-md text-10 flex items-center px-5 h-5 w-full bg-blue/30 cursor-pointer"
                                         key={index}
@@ -367,6 +370,13 @@ const Calender: FC<CalenderProps> = ({ user, family, events }) => {
         user={calendarEntry?.user}
         open={open && isDateTodayOrFuture}
         setClose={() => setOpen(false)}
+      />
+      <EventDetail
+        date={calendarEntry?.date}
+        user={calendarEntry?.user}
+        open={!!openEventDetail}
+        setClose={() => setOpenEventDetail(undefined)}
+        event={openEventDetail}
       />
       <DatePickerModal
         onClose={() => setOpenDatePicker(false)}

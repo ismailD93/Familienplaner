@@ -13,7 +13,7 @@ import { IoMdCloseCircle } from "react-icons/io";
 export interface InputComponentProps {
   name: string;
   label?: string;
-  error?: string | false;
+  error?: string;
   selected?: Date | null;
   onChange?: (date: Date | undefined | null) => void;
   excludeDateIntervals?: { start: Date; end: Date }[];
@@ -49,7 +49,7 @@ const DateInput: FC<InputComponentProps> = ({
   const [selected, setSelected] = useState<Date | null | undefined>(
     passedSelected
   );
-  console.log(selected, "SELECTED");
+
   useEffect(() => {
     onChange?.(selected);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -148,7 +148,7 @@ const DateInput: FC<InputComponentProps> = ({
           )}
           {!!selected && !hideCloseIcon && (
             <div className="absolute top-0 right-0 bottom-0 flex flex-col justify-center pr-3 pointer-events-auto">
-              <button type="button" onClick={() => setSelected(null)}>
+              <button type="button" onClick={() => setSelected(undefined)}>
                 <IoMdCloseCircle className="h-4 w-4" />
               </button>
             </div>
