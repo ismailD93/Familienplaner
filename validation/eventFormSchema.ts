@@ -7,6 +7,7 @@ const eventFormSchema = () =>
     dateStart: Yup.string().required("erforderlich"),
     dateEnd: Yup.string().required("erforderlich"),
     text: Yup.string().min(1, "").required("erforderlich"),
+    description: Yup.string()
   });
 
 export default eventFormSchema;

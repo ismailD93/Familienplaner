@@ -37,6 +37,7 @@ const DetailPopUp: FC<DetailPopUpProps> = ({ open, setClose, date, user }) => {
   const formik = useFormik({
     initialValues: {
       text: "",
+      description: "",
       startTime: start,
       endTime: start,
       dateStart: dateValueStart.toDateString(),
@@ -53,7 +54,7 @@ const DetailPopUp: FC<DetailPopUpProps> = ({ open, setClose, date, user }) => {
         if (!user) return;
         const response = await createEvent(user?.name, {
           title: values.text,
-          description: "test",
+          description: values.description,
           startDate: values.dateStart,
           endDate: values.dateEnd,
           startTime: values.startTime,
@@ -215,8 +216,9 @@ const DetailPopUp: FC<DetailPopUpProps> = ({ open, setClose, date, user }) => {
                   Notiz
                 </label>
                 <textarea
-                  value={note}
-                  onChange={(e) => setNote(e.target.value)}
+                  value={formik.values.description}
+                  name="description"
+                  onChange={formik.handleChange}
                   className="w-full px-3 py-2 border border-black-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue"
                   rows={3}
                   placeholder="Notiz eingeben"
