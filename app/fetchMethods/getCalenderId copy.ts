@@ -1,9 +1,6 @@
-export const getCalenderByName = async (
-  token: string,
-  calenderName: string
-) => {
+export const getCalenderId = async (token: string) => {
   const calender = await fetch(
-    `http://localhost:5140/api/calendar/getByName?name=${calenderName}`,
+    `http://localhost:5140/api/account/getCalendarIdByUsername`,
     {
       method: "GET",
       headers: {
@@ -13,7 +10,7 @@ export const getCalenderByName = async (
       },
     }
   );
-  if (calender.status !== 200) {
+  if (calender.status === 404) {
     return undefined;
   } else {
     return await calender.json();

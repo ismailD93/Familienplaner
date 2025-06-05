@@ -11,11 +11,13 @@ import {
   type FocusEvent,
   type InputHTMLAttributes,
 } from "react";
-import { FiEye, FiEyeOff } from "react-icons/fi";
 
 export interface InputComponentProps
   extends Omit<
-    DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>,
+    DetailedHTMLProps<
+      InputHTMLAttributes<HTMLTextAreaElement>,
+      HTMLTextAreaElement
+    >,
     "classNames" | "defaultValue" | "size"
   > {
   name: string;
@@ -34,9 +36,9 @@ export interface InputComponentProps
     | "time"
     | "datetime-local";
   // eslint-disable-next-line no-unused-vars
-  onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (event: ChangeEvent<HTMLTextAreaElement>) => void;
   // eslint-disable-next-line no-unused-vars
-  onBlur?: (event: FocusEvent<HTMLInputElement, Element>) => void;
+  onBlur?: (event: FocusEvent<HTMLTextAreaElement, Element>) => void;
   touched?: boolean;
   size?: "18" | "16";
   isDate?: boolean;
@@ -46,31 +48,26 @@ export interface InputComponentProps
   variant?: "black-30" | "white";
 }
 
-const TextInput: FC<InputComponentProps> = ({
+const TextArea: FC<InputComponentProps> = ({
   label,
   name,
   error,
   value,
   onChange,
-  type,
   defaultValue,
   touched,
   size = "18",
   readOnly,
   hidden,
   variant = "black-30",
-  max,
-  min,
   ...rest
 }) => {
   const [focused, setFocused] = useState<boolean>(false);
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-
   const [hasValue, setHasValue] = useState<boolean>(!!defaultValue);
   const [internalValue, setInternalValue] = useState<
     string | number | undefined
   >(value ?? defaultValue);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     if (focused || !!internalValue || internalValue === 0) {
@@ -119,22 +116,16 @@ const TextInput: FC<InputComponentProps> = ({
             "bg-white": variant == "white",
           })}
         >
-          <input
-            max={max}
-            min={min}
+          <textarea
+            rows={4}
             ref={inputRef}
-            autoComplete=""
-            className={classNames(
-              "w-full outline-none rounded-lg h-text-input px-3 py-4",
-              {
-                "text-red": error && touched,
-                "pt-[33px]": !!label && (hasValue || focused) && size === "16",
-                "pt-9": !!label && (hasValue || focused) && size === "18",
-                "bg-black-30": variant === "black-30",
-                "bg-white": variant == "white",
-              }
-            )}
-            type={type === "password" && showPassword ? "text" : type}
+            className={classNames("w-full outline-none rounded-lg px-3 py-4", {
+              "text-red": error && touched,
+              "pt-[33px]": !!label && (hasValue || focused) && size === "16",
+              "pt-9": !!label && (hasValue || focused) && size === "18",
+              "bg-black-30": variant === "black-30",
+              "bg-white": variant == "white",
+            })}
             id={name}
             name={name}
             value={value}
@@ -148,18 +139,6 @@ const TextInput: FC<InputComponentProps> = ({
             defaultValue={defaultValue}
             {...rest}
           />
-          {type === "password" && (
-            <div
-              className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-black-60"
-              onClick={() => setShowPassword((prev) => !prev)}
-            >
-              {!showPassword ? (
-                <FiEyeOff className="size-5" />
-              ) : (
-                <FiEye className="size-5" />
-              )}
-            </div>
-          )}
         </div>
       </div>
       {!!error && !!touched && (
@@ -171,4 +150,4 @@ const TextInput: FC<InputComponentProps> = ({
   );
 };
 
-export default TextInput;
+export default TextArea;

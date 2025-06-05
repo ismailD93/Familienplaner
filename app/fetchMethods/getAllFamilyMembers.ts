@@ -1,9 +1,9 @@
-export const getCalenderByName = async (
+export const getAllFamilyMembers = async (
   token: string,
-  calenderName: string
+  calenderId: number
 ) => {
-  const calender = await fetch(
-    `http://localhost:5140/api/calendar/getByName?name=${calenderName}`,
+  const events = await fetch(
+    `http://localhost:5140/api/calendar/getBy${calenderId}`,
     {
       method: "GET",
       headers: {
@@ -13,9 +13,10 @@ export const getCalenderByName = async (
       },
     }
   );
-  if (calender.status !== 200) {
+
+  if (events.status === 404) {
     return undefined;
   } else {
-    return await calender.json();
+    return await events.json();
   }
 };

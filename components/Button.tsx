@@ -12,8 +12,14 @@ interface Props
   target?: string;
   rel?: string;
   type?: "button" | "submit";
-  variant?: "blue" | "blue-outline" | "dark-blue";
-  size?: "16" | "14";
+  variant?:
+    | "blue"
+    | "blue-outline"
+    | "dark-blue"
+    | "grey-outline"
+    | "delete"
+    | "green";
+  size?: "16" | "14" | "12";
   icon?: ReactNode;
 }
 
@@ -84,6 +90,11 @@ const InnerButton = ({
             variant === "dark-blue" && !disabled,
           "bg-white-80 hover:bg-blue/80 text-blue hover:text-white-80 border-blue":
             variant === "blue-outline" && !disabled,
+          "bg-white-80 hover:bg-gray/80 text-black hover:text-white-80 border-gray":
+            variant === "grey-outline" && !disabled,
+          "bg-white-80 hover:bg-red/80 text-red hover:text-white-80 border-red":
+            variant === "delete" && !disabled,
+          "bg-[#289c28] text-white ": variant === "green" && !disabled,
         }
       )}
     >
@@ -92,6 +103,7 @@ const InnerButton = ({
           className={classNames({
             "text-button px-6 py-4": size === "16",
             "text-button-small px-4 py-2": size === "14",
+            "text-14 px-2 py-1": size === "12",
             "justify-between flex flex-row items-center py-[15px] pl-5 pr-4":
               icon,
           })}

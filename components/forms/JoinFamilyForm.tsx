@@ -69,7 +69,7 @@ const JoinFamilyForm: FC = ({}) => {
           />
         </div>
         <div className="mt-6 w-full">
-          <TextInput
+          {/* <TextInput
             placeholder="Autenthifizierungscode"
             type="password"
             name="password"
@@ -77,7 +77,7 @@ const JoinFamilyForm: FC = ({}) => {
             error={formik.errors.auth || falseValues}
             touched={formik.touched.auth}
             defaultValue=""
-          />
+          /> */}
         </div>
         <div className="flex flex-col mt-10 gap-x-6">
           <Button

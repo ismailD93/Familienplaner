@@ -3,7 +3,7 @@ export const getAllCalenderEvents = async (
   calenderId: number
 ) => {
   const events = await fetch(
-    `http://localhost:5140/api/calendar/getBy${calenderId}`,
+    `http://localhost:5140/api/event/getAllEventsFromCalendar?calendarId=${calenderId}`,
     {
       method: "GET",
       headers: {

@@ -19,6 +19,7 @@ const RegisterForm: FC = ({}) => {
     (searchParams.get("animation") as Animation) || "login";
 
   const [falseValues, setFalseValues] = useState<string | undefined>(undefined);
+  const [registerSuccess, setRegisterSuccess] = useState<boolean>(false);
   const formik = useFormik({
     initialValues: {
       username: "",
@@ -38,7 +39,7 @@ const RegisterForm: FC = ({}) => {
             "Accept-Language": "de",
           },
           body: JSON.stringify({
-            username: values.username,
+            username: values.username.replaceAll(" ", ""),
             email: values.email,
             password: values.password,
             confirmPassword: values.confirmPassword,
@@ -46,24 +47,35 @@ const RegisterForm: FC = ({}) => {
         });
 
         if (!res.ok) {
-          setFalseValues("Anmelde Daten falsch!");
+          const response = await res.json();
+          const errors = response.errors;
+
+          for (let i = 0; i < errors.length; i++) {
+            const error = errors[i];
+            if (error.includes("is already taken")) {
+              setFalseValues("Username ist bereits vergeben!");
+            }
+          }
+
           throw new Error(`HTTP error! status: ${res.status}`);
         }
 
-        // Überprüfe den HTTP-Statuscode
         const statusCode = res.status; // z.B. 200, 400, 500, etc.
 
+        console.log(await res.json());
         if (statusCode === 200) {
+          setFalseValues(undefined);
+          setRegisterSuccess(true);
           setTimeout(() => {
             router.push("/start?animation=login");
-          }, 100);
+          }, 300);
         }
       } catch (error) {
         console.error("Submitting information form failed", error);
       }
     },
   });
-
+  console.log(registerSuccess);
   return (
     <div
       className={classNames(
@@ -90,6 +102,7 @@ const RegisterForm: FC = ({}) => {
             placeholder="Username"
             type="text"
             name="username"
+            maxLength={20}
             onChange={formik.handleChange}
             error={formik.errors.username || falseValues}
             touched={formik.touched.username}
@@ -101,8 +114,9 @@ const RegisterForm: FC = ({}) => {
             placeholder="Email"
             type="text"
             name="email"
+            maxLength={50}
             onChange={formik.handleChange}
-            error={formik.errors.email || falseValues}
+            error={formik.errors.email}
             touched={formik.touched.email}
             defaultValue=""
           />
@@ -112,8 +126,9 @@ const RegisterForm: FC = ({}) => {
             placeholder="Passwort"
             type="password"
             name="password"
+            maxLength={20}
             onChange={formik.handleChange}
-            error={formik.errors.password || falseValues}
+            error={formik.errors.password}
             touched={formik.touched.password}
             defaultValue=""
           />
@@ -123,19 +138,31 @@ const RegisterForm: FC = ({}) => {
             placeholder="Passwort bestätigen"
             type="password"
             name="confirmPassword"
+            maxLength={20}
             onChange={formik.handleChange}
-            error={formik.errors.confirmPassword || falseValues}
+            error={formik.errors.confirmPassword}
             touched={formik.touched.password}
             defaultValue=""
           />
         </div>
         <div className="flex flex-col mt-10 gap-x-6">
-          <Button
-            className="w-full"
-            type="submit"
-            form="registerForm"
-            label="Registrieren"
-          />
+          {registerSuccess ? (
+            <Button
+              className="w-full"
+              variant="green"
+              disabled
+              form="registerForm"
+              label={"Anmeldung war erfolgreich"}
+            />
+          ) : (
+            <Button
+              className="w-full"
+              type="submit"
+              variant={"blue"}
+              form="registerForm"
+              label={"Registrieren"}
+            />
+          )}
           <div
             className="mx-auto mt-5 text-blue underline underline-offset-4 font-semibold cursor-pointer"
             onClick={() => router.push("/start?animation=login")}

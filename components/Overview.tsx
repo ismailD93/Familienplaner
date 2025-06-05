@@ -1,69 +1,28 @@
 "use client";
 import { FC, useState } from "react";
 import EventCard from "./EventCard";
-import { User } from "../types";
-import { addDays } from "date-fns";
+import { Event } from "../types";
 
 interface OverviewProps {
+  events: Event[];
   name?: string;
+  token: string;
 }
-type Event = {
-  id: number;
-  title: string;
-  location: string;
-  date: Date;
-  participants: User[];
-};
-const Overview: FC<OverviewProps> = ({}) => {
+
+const Overview: FC<OverviewProps> = ({ events }) => {
   const [activeTab, setActiveTab] = useState<"upcoming" | "past" | "canceled">(
     "upcoming"
   );
+  const now = new Date();
 
-  const date = new Date();
-  const test = addDays(date, 1);
-  const test1 = addDays(date, 2);
-  const test2 = addDays(date, 3);
+  const pastEvents = events.filter(
+    (event) => new Date(event.startDate).valueOf() < now.valueOf()
+  );
+  const upcomingEvents = events.filter(
+    (event) => new Date(event.startDate).valueOf() > now.valueOf()
+  );
+  const canceldEvents = events.filter((event) => event.isDeleted);
 
-  const events: Event[] = [
-    {
-      id: 1,
-      title: "Familientreffen",
-      date: date,
-      location: "Online",
-      participants: [
-        { id: "2", name: "Metehan", status: "online" },
-        { id: "3", name: "Uemit", status: "online" },
-      ],
-    },
-    {
-      id: 2,
-      title: "Geburtstagsfeier",
-      date: test,
-      location: "Zuhause",
-      participants: [
-        { id: "7", name: "Oma", status: "online" },
-        { id: "8", name: "Opa", status: "offline" },
-      ],
-    },
-    {
-      id: 3,
-      title: "Weihnachtsessen",
-      date: test1,
-      location: "Oma's Haus",
-      participants: [{ id: "4", name: "Kind1", status: "online" }],
-    },
-    {
-      id: 4,
-      title: "Kinoabend",
-      date: test2,
-      location: "Kino Berlin",
-      participants: [
-        { id: "4", name: "Kind1", status: "online" },
-        { id: "5", name: "Kind2", status: "offline" },
-        { id: "6", name: "Kind3", status: "offline" },
-      ],
-    },
-  ];
   return (
     <div className="p-6 bg-black-30 min-h-screen">
       {/* Tab-Header */}
@@ -101,17 +60,48 @@ const Overview: FC<OverviewProps> = ({}) => {
       </div>
 
       {/* Ereignisliste */}
-      <div className="mt-6 space-y-4">
-        {events.map((event, index) => (
-          <EventCard
-            key={index}
-            title={event.title}
-            date={event.date}
-            location={event.location}
-            participants={event.participants}
-          />
-        ))}
-      </div>
+      {activeTab === "upcoming" && (
+        <div className="mt-6 space-y-4">
+          {upcomingEvents.map((event, index) => (
+            <EventCard
+              key={index}
+              title={event.title}
+              date={event.startDate}
+              location={""}
+              description={event.description}
+            />
+          ))}
+        </div>
+      )}
+      {activeTab === "past" && (
+        <div className="mt-6 space-y-4">
+          {pastEvents.map((event, index) => (
+            <EventCard
+              key={index}
+              title={event.title}
+              date={event.startDate}
+              location={""}
+              isPast
+              description={event.description}
+            />
+          ))}
+        </div>
+      )}
+      {activeTab === "canceled" && (
+        <div className="mt-6 space-y-4">
+          {canceldEvents.map((event, index) => (
+            <EventCard
+              key={index}
+              cancelled
+              title={event.title}
+              date={event.startDate}
+              location={""}
+              isPast
+              description={event.description}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

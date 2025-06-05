@@ -1,31 +1,42 @@
 "use client";
 
 import classNames from "classnames";
-import { addDays, format, startOfWeek, subDays } from "date-fns";
+import { addDays, format, startOfDay, startOfWeek, subDays } from "date-fns";
 import { de } from "date-fns/locale";
 import { FC, useState } from "react";
 import { ChevronIcon } from "../icons/ChevronIcon";
 import DetailPopUp from "./DetailPopUp";
-import { User } from "../types";
 import { MdOutlineFamilyRestroom } from "react-icons/md";
 import { FaUser } from "react-icons/fa";
 import { CalenderIcon } from "../icons/CalenderIcon";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
 import DatePickerModal from "./modal/DatePickerModal";
 import DatePickerComponent from "./DatePickerComponent";
+import { Event, User } from "../types";
+import MoreEventModal from "./modal/MoreEventModal";
+import EventDetail from "./EventDetail";
 
 interface CalenderProps {
   name?: string;
   user?: User;
   family: User[];
+  events: Event[];
 }
 
 const ITEMS_PER_PAGE = 5;
 
-const Calender: FC<CalenderProps> = ({ user, family }) => {
+const Calender: FC<CalenderProps> = ({ user, family, events }) => {
   const weekdays: { weekday: string; date: Date }[] = [];
+  const [extraEvents, setExtraEvents] = useState<Event[]>([]);
+  const [extraEventsOpen, setExtraEventsOpen] = useState(false);
+  const [openEventDetail, setOpenEventDetail] = useState<Event | undefined>(
+    undefined
+  );
   const [currentPage, setCurrentPage] = useState(0);
   const [expand, setExpand] = useState<7 | 14>(7);
+  const [calendarEntry, setCalendarEntry] = useState<
+    { user: User; date: Date } | undefined
+  >(undefined);
   const [open, setOpen] = useState<boolean>(false);
   const [openDatePicker, setOpenDatePicker] = useState<boolean>(false);
   const [userView, setUserView] = useState<"self" | "family">("family");
@@ -51,6 +62,10 @@ const Calender: FC<CalenderProps> = ({ user, family }) => {
   );
   const hasNextPage = (currentPage + 1) * ITEMS_PER_PAGE < family.length;
   const hasPrevPage = currentPage > 0;
+  const isDateTodayOrFuture =
+    (calendarEntry?.date &&
+      calendarEntry.date.valueOf() >= startOfDay(new Date()).valueOf()) ||
+    false;
 
   return (
     <div className="h-full w-full relative">
@@ -146,7 +161,7 @@ const Calender: FC<CalenderProps> = ({ user, family }) => {
                     </div>
                     <div className="cmd:flex hidden">{item.name}</div>
                     <div className="flex size-9 items-center justify-center cmd:hidden bg-black-60 rounded-full">
-                      {item.name.slice(0, 2)}
+                      {item.name.slice(0, 2).toUpperCase()}
                     </div>
                   </div>
                   <div
@@ -176,9 +191,9 @@ const Calender: FC<CalenderProps> = ({ user, family }) => {
                     )}
                   />
                 </div>
-                <div className="cmd:flex hidden">{user?.name}</div>
+                <div className="cmd:flex hidden">{user?.username}</div>
                 <div className="flex size-9 items-center justify-center cmd:hidden bg-black-60 rounded-full">
-                  {user?.name.slice(0, 2)}
+                  {user?.username.slice(0, 2)}
                 </div>
               </div>
               <div
@@ -197,7 +212,7 @@ const Calender: FC<CalenderProps> = ({ user, family }) => {
             <div />
             {weekdays.map((day, rowIndex) => {
               return (
-                <div key={rowIndex} className="flex w-full min-h-20">
+                <div key={rowIndex} className="flex w-full min-h-28">
                   <div
                     className={classNames(
                       "min-w-10 cmd:min-w-20 border-l border-gray/10 border-b text-gray flex min-h-20 items-center justify-center",
@@ -217,9 +232,9 @@ const Calender: FC<CalenderProps> = ({ user, family }) => {
                       paginatedUsers.map((item, index) => {
                         return (
                           <div
-                            onDoubleClick={() => {
+                            onClick={async () => {
                               setOpen(!open);
-                              console.log(item.name, day.date);
+                              setCalendarEntry({ user: item, date: day.date });
                             }}
                             key={index}
                             className={classNames(
@@ -231,14 +246,81 @@ const Calender: FC<CalenderProps> = ({ user, family }) => {
                               }
                             )}
                           >
-                            {}
+                            <div className="flex flex-col gap-y-1 mx-1 md:mx-4 my-2">
+                              {(() => {
+                                const filteredEvents = events.filter(
+                                  (event) => {
+                                    if (event.isDeleted) return null;
+                                    const eventStart = startOfDay(
+                                      new Date(event.startDate)
+                                    ).valueOf();
+                                    const eventEnd = startOfDay(
+                                      new Date(event.endDate)
+                                    ).valueOf();
+                                    const currentDay = startOfDay(
+                                      new Date(day.date)
+                                    ).valueOf();
+                                    return (
+                                      currentDay >= eventStart &&
+                                      currentDay <= eventEnd &&
+                                      event.userId === item.id
+                                    );
+                                  }
+                                );
+
+                                const visibleEvents = filteredEvents.slice(
+                                  0,
+                                  3
+                                );
+                                const remaining =
+                                  filteredEvents.length - visibleEvents.length;
+
+                                return (
+                                  <>
+                                    {visibleEvents.map((event, index) => {
+                                      if (event.isDeleted) return null;
+                                      return (
+                                        <div
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            setOpenEventDetail(event);
+                                          }}
+                                          className="rounded-md text-10 flex items-center px-5 h-5 w-full cursor-pointer bg-blue/30"
+                                          style={{
+                                            backgroundColor: item?.color
+                                              ? hexToRgba(item.color, 0.5)
+                                              : undefined,
+                                          }}
+                                          key={index}
+                                        >
+                                          <div>{event.title}</div>
+                                        </div>
+                                      );
+                                    })}
+                                    {remaining > 0 && (
+                                      <div
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          setExtraEvents(filteredEvents);
+                                          setExtraEventsOpen(true);
+                                        }}
+                                        className="text-black cursor-pointer text-12 px-2 py-1 hover:underline"
+                                      >
+                                        {remaining} weitere Einträge
+                                      </div>
+                                    )}
+                                  </>
+                                );
+                              })()}
+                            </div>
                           </div>
                         );
                       })
                     ) : (
                       <div
-                        onDoubleClick={() => {
+                        onClick={() => {
                           setOpen(!open);
+                          setCalendarEntry({ user: user!, date: day.date }); // set the current user
                         }}
                         className={classNames(
                           "border-b border-l border-gray/10 w-full cursor-pointer border-r",
@@ -247,7 +329,66 @@ const Calender: FC<CalenderProps> = ({ user, family }) => {
                           }
                         )}
                       >
-                        {}
+                        <div className="flex flex-col gap-y-1 mx-1 md:mx-4 my-2">
+                          {(() => {
+                            const filteredEvents = events.filter((event) => {
+                              if (event.isDeleted) return false;
+                              const eventStart = startOfDay(
+                                new Date(event.startDate)
+                              ).valueOf();
+                              const eventEnd = startOfDay(
+                                new Date(event.endDate)
+                              ).valueOf();
+                              const currentDay = startOfDay(
+                                new Date(day.date)
+                              ).valueOf();
+
+                              return (
+                                currentDay >= eventStart &&
+                                currentDay <= eventEnd &&
+                                event.userId === user?.id
+                              );
+                            });
+
+                            const visibleEvents = filteredEvents.slice(0, 3);
+                            const remaining =
+                              filteredEvents.length - visibleEvents.length;
+
+                            return (
+                              <>
+                                {visibleEvents.map((event, index) => (
+                                  <div
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setOpenEventDetail(event);
+                                    }}
+                                    className="rounded-md text-10 flex items-center px-5 h-5 w-full cursor-pointer bg-blue/30"
+                                    style={{
+                                      backgroundColor: user?.color
+                                        ? hexToRgba(user.color, 0.5)
+                                        : undefined,
+                                    }}
+                                    key={index}
+                                  >
+                                    <div>{event.title}</div>
+                                  </div>
+                                ))}
+                                {remaining > 0 && (
+                                  <div
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setExtraEvents(filteredEvents);
+                                      setExtraEventsOpen(true);
+                                    }}
+                                    className="text-black cursor-pointer text-12 px-2 py-1 hover:underline"
+                                  >
+                                    {remaining} weitere Einträge
+                                  </div>
+                                )}
+                              </>
+                            );
+                          })()}
+                        </div>
                       </div>
                     )}
                   </div>
@@ -293,7 +434,19 @@ const Calender: FC<CalenderProps> = ({ user, family }) => {
           </button>
         </div>
       </div>
-      <DetailPopUp open={open} setClose={() => setOpen(false)} />
+      <DetailPopUp
+        date={calendarEntry?.date}
+        user={calendarEntry?.user}
+        open={open && isDateTodayOrFuture}
+        setClose={() => setOpen(false)}
+      />
+      <EventDetail
+        date={calendarEntry?.date}
+        user={calendarEntry?.user}
+        open={!!openEventDetail}
+        setClose={() => setOpenEventDetail(undefined)}
+        event={openEventDetail}
+      />
       <DatePickerModal
         onClose={() => setOpenDatePicker(false)}
         open={openDatePicker}
@@ -307,6 +460,12 @@ const Calender: FC<CalenderProps> = ({ user, family }) => {
           }}
         />
       </DatePickerModal>
+      {extraEventsOpen && (
+        <MoreEventModal
+          extraEvents={extraEvents}
+          onClose={() => setExtraEventsOpen(false)}
+        />
+      )}
     </div>
   );
 };
@@ -319,4 +478,20 @@ const isSameDay = (date1: Date, date2: Date) => {
     date1.getMonth() === date2.getMonth() &&
     date1.getDate() === date2.getDate()
   );
+};
+
+const hexToRgba = (hex: string, alpha: number) => {
+  hex = hex.replace("#", "");
+  if (hex.length === 3) {
+    hex = hex
+      .split("")
+      .map((c) => c + c)
+      .join("");
+  }
+  const bigint = parseInt(hex, 16);
+  const r = (bigint >> 16) & 255;
+  const g = (bigint >> 8) & 255;
+  const b = bigint & 255;
+
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 };
