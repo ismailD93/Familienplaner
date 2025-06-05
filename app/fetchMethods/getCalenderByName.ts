@@ -13,7 +13,7 @@ export const getCalenderByName = async (
       },
     }
   );
-  if (calender.status === 404) {
+  if (calender.status !== 200) {
     return undefined;
   } else {
     return await calender.json();

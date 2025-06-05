@@ -30,17 +30,17 @@ const Sidebar: FC<NavigationProps> = ({ disableButtons }) => {
       label: "Kalender",
       icon: <SlCalender className="size-5 md:size-6" />,
     },
-    {
-      link: "/family",
-      label: "Familie",
-      icon: <MdOutlineFamilyRestroom className="size-5 md:size-6" />,
-    },
+    // {
+    //   link: "/family",
+    //   label: "Familie",
+    //   icon: <MdOutlineFamilyRestroom className="size-5 md:size-6" />,
+    // },
   ];
 
   return (
     <div className="w-full max-w-[50px] md:max-w-[64px] ">
       <div className="fixed bg-[#E4EDF3] inset-y-0 top-0 z-[2] w-full max-w-[50px] md:max-w-[64px] select-none shadow-xl">
-        <div className="flex flex-col justify-between h-full px-2 py-36 items-center">
+        <div className="flex flex-col justify-between h-full px-2 pt-36 pb-10 items-center">
           <div className="flex flex-col  text-10">
             {linkItems.map((item, index) => {
               return (
@@ -70,16 +70,6 @@ const Sidebar: FC<NavigationProps> = ({ disableButtons }) => {
           <div className="flex flex-col gap-y-10 text-10">
             <div
               onClick={() => {
-                logout();
-                router.refresh();
-              }}
-              className="cursor-pointer text-10 font-medium flex flex-col items-center gap-y-1.5 hover:text-blue"
-            >
-              <TbLogout className="size-5 md:size-6 text-gray/80" />
-              <span className="hidden text-gray md:block">Ausloggen</span>
-            </div>
-            <div
-              onClick={() => {
                 if (!disableButtons) router.push("/settings");
               }}
               className={classNames(
@@ -101,6 +91,16 @@ const Sidebar: FC<NavigationProps> = ({ disableButtons }) => {
                 })}
               />
               <span className="hidden md:block ">Einstellung</span>
+            </div>
+            <div
+              onClick={() => {
+                logout();
+                router.refresh();
+              }}
+              className="cursor-pointer text-10 font-medium flex flex-col items-center gap-y-1.5 hover:text-blue"
+            >
+              <TbLogout className="size-5 md:size-6 text-gray/80" />
+              <span className="hidden text-gray md:block">Ausloggen</span>
             </div>
           </div>
         </div>

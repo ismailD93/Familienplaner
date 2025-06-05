@@ -13,6 +13,7 @@ export const getAllFamilyMembers = async (
       },
     }
   );
+
   if (events.status === 404) {
     return undefined;
   } else {

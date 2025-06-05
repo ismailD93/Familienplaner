@@ -7,6 +7,7 @@ export type User = {
   email: string;
   status: Status;
   role?: "admin";
+  color: string;
 };
 
 export type Event = {
@@ -16,4 +17,5 @@ export type Event = {
   startDate: Date;
   endDate: Date;
   title: string;
+  isDeleted: boolean;
 };

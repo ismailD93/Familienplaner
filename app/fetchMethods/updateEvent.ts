@@ -1,20 +1,23 @@
-export const createEvent = async (
-  username: string,
-  values: {
-    title: string;
-    description: string;
-    startDate: string;
-    endDate: string;
-    startTime: string;
-    endTime: string;
-    weeklyEndDate?: string;
+export const updateEvent = async (values: {
+  title: string;
+  description: string;
+  startDate: string;
+  endDate: string;
+  isDeleted: boolean;
+  eventId: number;
+  startTime: string;
+  endTime: string;
+}) => {
+  let parsedStartDate;
+  let parsedEndDate;
+
+  if (values.isDeleted === false) {
+    parsedStartDate = `${values.startDate}T${values.startTime}:00.195Z`;
+    parsedEndDate = `${values.endDate}T${values.endTime}:00.195Z`;
   }
-) => {
-  const parsedStartDate = `${values.startDate}T${values.startTime}:00.195Z`;
-  const parsedEndDate = `${values.endDate}T${values.endTime}:00.195Z`;
 
   const res = await fetch(
-    `http://localhost:5140/addUserEvent?username=${username}`,
+    `http://localhost:5140/api/event/updateEvent?id=${values.eventId}`,
     {
       method: "PUT",
       headers: {
@@ -24,6 +27,7 @@ export const createEvent = async (
       body: JSON.stringify({
         title: values.title,
         description: values.description,
+        isDeleted: values.isDeleted || false,
         startDate: parsedStartDate,
         endDate: parsedEndDate,
       }),

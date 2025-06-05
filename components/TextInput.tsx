@@ -11,6 +11,7 @@ import {
   type FocusEvent,
   type InputHTMLAttributes,
 } from "react";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 
 export interface InputComponentProps
   extends Omit<
@@ -63,6 +64,8 @@ const TextInput: FC<InputComponentProps> = ({
   ...rest
 }) => {
   const [focused, setFocused] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+
   const [hasValue, setHasValue] = useState<boolean>(!!defaultValue);
   const [internalValue, setInternalValue] = useState<
     string | number | undefined
@@ -131,7 +134,7 @@ const TextInput: FC<InputComponentProps> = ({
                 "bg-white": variant == "white",
               }
             )}
-            type={type}
+            type={type === "password" && showPassword ? "text" : type}
             id={name}
             name={name}
             value={value}
@@ -145,6 +148,18 @@ const TextInput: FC<InputComponentProps> = ({
             defaultValue={defaultValue}
             {...rest}
           />
+          {type === "password" && (
+            <div
+              className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-black-60"
+              onClick={() => setShowPassword((prev) => !prev)}
+            >
+              {!showPassword ? (
+                <FiEyeOff className="size-5" />
+              ) : (
+                <FiEye className="size-5" />
+              )}
+            </div>
+          )}
         </div>
       </div>
       {!!error && !!touched && (

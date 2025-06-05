@@ -250,6 +250,7 @@ const Calender: FC<CalenderProps> = ({ user, family, events }) => {
                               {(() => {
                                 const filteredEvents = events.filter(
                                   (event) => {
+                                    if (event.isDeleted) return null;
                                     const eventStart = startOfDay(
                                       new Date(event.startDate)
                                     ).valueOf();
@@ -276,18 +277,26 @@ const Calender: FC<CalenderProps> = ({ user, family, events }) => {
 
                                 return (
                                   <>
-                                    {visibleEvents.map((event, index) => (
-                                      <div
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          setOpenEventDetail(event);
-                                        }}
-                                        className="rounded-md text-10 flex items-center px-5 h-5 w-full bg-blue/30 cursor-pointer"
-                                        key={index}
-                                      >
-                                        <div>{event.title}</div>
-                                      </div>
-                                    ))}
+                                    {visibleEvents.map((event, index) => {
+                                      if (event.isDeleted) return null;
+                                      return (
+                                        <div
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            setOpenEventDetail(event);
+                                          }}
+                                          className="rounded-md text-10 flex items-center px-5 h-5 w-full cursor-pointer bg-blue/30"
+                                          style={{
+                                            backgroundColor: item?.color
+                                              ? hexToRgba(item.color, 0.5)
+                                              : undefined,
+                                          }}
+                                          key={index}
+                                        >
+                                          <div>{event.title}</div>
+                                        </div>
+                                      );
+                                    })}
                                     {remaining > 0 && (
                                       <div
                                         onClick={(e) => {
@@ -311,6 +320,7 @@ const Calender: FC<CalenderProps> = ({ user, family, events }) => {
                       <div
                         onClick={() => {
                           setOpen(!open);
+                          setCalendarEntry({ user: user!, date: day.date }); // set the current user
                         }}
                         className={classNames(
                           "border-b border-l border-gray/10 w-full cursor-pointer border-r",
@@ -319,7 +329,66 @@ const Calender: FC<CalenderProps> = ({ user, family, events }) => {
                           }
                         )}
                       >
-                        {}
+                        <div className="flex flex-col gap-y-1 mx-1 md:mx-4 my-2">
+                          {(() => {
+                            const filteredEvents = events.filter((event) => {
+                              if (event.isDeleted) return false;
+                              const eventStart = startOfDay(
+                                new Date(event.startDate)
+                              ).valueOf();
+                              const eventEnd = startOfDay(
+                                new Date(event.endDate)
+                              ).valueOf();
+                              const currentDay = startOfDay(
+                                new Date(day.date)
+                              ).valueOf();
+
+                              return (
+                                currentDay >= eventStart &&
+                                currentDay <= eventEnd &&
+                                event.userId === user?.id
+                              );
+                            });
+
+                            const visibleEvents = filteredEvents.slice(0, 3);
+                            const remaining =
+                              filteredEvents.length - visibleEvents.length;
+
+                            return (
+                              <>
+                                {visibleEvents.map((event, index) => (
+                                  <div
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setOpenEventDetail(event);
+                                    }}
+                                    className="rounded-md text-10 flex items-center px-5 h-5 w-full cursor-pointer bg-blue/30"
+                                    style={{
+                                      backgroundColor: user?.color
+                                        ? hexToRgba(user.color, 0.5)
+                                        : undefined,
+                                    }}
+                                    key={index}
+                                  >
+                                    <div>{event.title}</div>
+                                  </div>
+                                ))}
+                                {remaining > 0 && (
+                                  <div
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setExtraEvents(filteredEvents);
+                                      setExtraEventsOpen(true);
+                                    }}
+                                    className="text-black cursor-pointer text-12 px-2 py-1 hover:underline"
+                                  >
+                                    {remaining} weitere Einträge
+                                  </div>
+                                )}
+                              </>
+                            );
+                          })()}
+                        </div>
                       </div>
                     )}
                   </div>
@@ -409,4 +478,20 @@ const isSameDay = (date1: Date, date2: Date) => {
     date1.getMonth() === date2.getMonth() &&
     date1.getDate() === date2.getDate()
   );
+};
+
+const hexToRgba = (hex: string, alpha: number) => {
+  hex = hex.replace("#", "");
+  if (hex.length === 3) {
+    hex = hex
+      .split("")
+      .map((c) => c + c)
+      .join("");
+  }
+  const bigint = parseInt(hex, 16);
+  const r = (bigint >> 16) & 255;
+  const g = (bigint >> 8) & 255;
+  const b = bigint & 255;
+
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 };

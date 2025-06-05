@@ -3,9 +3,6 @@ import { redirect } from "next/navigation";
 import Settings from "../../../components/Settings";
 import { getAllFamilyMembers } from "../../fetchMethods/getAllFamilyMembers";
 import { getCalenderId } from "../../fetchMethods/getCalenderId copy";
-import CreateOrJoinCalender from "../../../components/CreateOrJoinCalender";
-import { User } from "../../../types";
-import { getUserByToken } from "../../fetchMethods/getUserByToken";
 
 const DashboardPage = async () => {
   const cookieStore = cookies();
@@ -20,7 +17,10 @@ const DashboardPage = async () => {
 
   return (
     <div>
-      <Settings members={allFamilyMembers.familyMembers} />
+      <Settings
+        userToken={authToken}
+        members={allFamilyMembers.familyMembers}
+      />
     </div>
   );
 };

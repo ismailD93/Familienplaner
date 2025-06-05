@@ -75,7 +75,7 @@ const CreateFamilyForm: FC = ({}) => {
           />
         </div>
         <div className="mt-6 w-full">
-          <TextInput
+          {/* <TextInput
             placeholder="Autenthifizierungscode"
             type="password"
             name="authentication"
@@ -83,7 +83,7 @@ const CreateFamilyForm: FC = ({}) => {
             error={formik.errors.authentication}
             touched={formik.touched.authentication}
             defaultValue=""
-          />
+          /> */}
         </div>
         <div className="flex flex-col mt-10 gap-x-6">
           <Button

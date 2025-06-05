@@ -27,6 +27,7 @@ export interface InputComponentProps {
   minDate?: Date | null;
   maxDate?: Date | null;
   hideCloseIcon?: boolean;
+  disabled?: boolean;
 }
 
 const DateInput: FC<InputComponentProps> = ({
@@ -45,6 +46,7 @@ const DateInput: FC<InputComponentProps> = ({
   minDate,
   maxDate,
   hideCloseIcon,
+  disabled,
 }) => {
   const [selected, setSelected] = useState<Date | null | undefined>(
     passedSelected
@@ -66,10 +68,14 @@ const DateInput: FC<InputComponentProps> = ({
         <div
           className={classNames("w-full h-10 px-3 rounded", {
             hidden: hidden,
+            "text-black": !disabled,
+            "text-black-60": disabled,
+            "border-red": error,
           })}
         >
           <div className="relative h-10 w-full">
             <DatePicker
+              disabled={disabled}
               locale={de}
               dateFormat="dd.MM.yyyy"
               selected={selected}
@@ -124,7 +130,7 @@ const DateInput: FC<InputComponentProps> = ({
           {label && (
             <div
               className={classNames(
-                "text-black absolute left-3 flex flex-col pointer-events-none",
+                "absolute left-3 flex flex-col pointer-events-none",
                 {
                   "text-18 leading-[24px] top-0 bottom-0 justify-center":
                     !selected,
@@ -146,7 +152,7 @@ const DateInput: FC<InputComponentProps> = ({
               <CalenderIcon className="h-4 w-4" />
             </div>
           )}
-          {!!selected && !hideCloseIcon && (
+          {!!selected && !hideCloseIcon && !disabled && (
             <div className="absolute top-0 right-0 bottom-0 flex flex-col justify-center pr-3 pointer-events-auto">
               <button type="button" onClick={() => setSelected(undefined)}>
                 <IoMdCloseCircle className="h-4 w-4" />
